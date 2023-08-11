@@ -1,0 +1,16 @@
+syntax = "proto3";
+package video;
+option go_package="video";
+
+import "user/model.proto";
+
+message Video {
+  int64 id = 1;
+  user.User author = 2;
+  string play_url = 3;
+  string cover_url = 4;
+  int64 favorite_count = 5;
+  int64 comment_count = 6;
+  bool is_favorite = 7;
+  string title = 8;
+}
