@@ -6,13 +6,18 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"minitok/cmd/user/dal"
+	"minitok/cmd/user/rpc"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
 	user "minitok/kitex_gen/user/userservice"
 	"net"
 )
 
-func initAll() {}
+func initAll() {
+	dal.SetUserDB()
+	rpc.InitForUser()
+}
 
 // TODO: 增加其它配置
 func main() {

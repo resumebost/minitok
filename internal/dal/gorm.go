@@ -7,10 +7,8 @@ import (
 	"minitok/internal/conf"
 )
 
-var Gorm *gorm.DB
-
 // InitGorm Init TODO: 增加更多配置
-func InitGorm() {
+func InitGorm() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(conf.MySQLDefaultDSN),
 		&gorm.Config{
 			PrepareStmt:            true,
@@ -18,8 +16,8 @@ func InitGorm() {
 		})
 
 	if err != nil {
-		panic(fmt.Errorf("open db:%w", err))
+		panic(fmt.Errorf("open db: %w", err))
 	}
 
-	Gorm = db
+	return db
 }

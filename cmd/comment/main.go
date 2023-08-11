@@ -6,13 +6,18 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"minitok/cmd/comment/dal"
+	"minitok/cmd/comment/rpc"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
 	comment "minitok/kitex_gen/comment/commentservice"
 	"net"
 )
 
-func initAll() {}
+func initAll() {
+	dal.SetCommentDB()
+	rpc.InitForComment()
+}
 
 // TODO: 增加其它配置
 func main() {

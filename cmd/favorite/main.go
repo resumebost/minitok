@@ -6,13 +6,18 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"minitok/cmd/favorite/dal"
+	"minitok/cmd/favorite/rpc"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
 	favorite "minitok/kitex_gen/favorite/favoriteservice"
 	"net"
 )
 
-func initAll() {}
+func initAll() {
+	dal.SetFavoriteDB()
+	rpc.InitForFavorite()
+}
 
 // TODO: 增加其它配置
 func main() {
