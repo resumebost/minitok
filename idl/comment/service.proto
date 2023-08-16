@@ -29,7 +29,16 @@ message ListResponse {
   Comment comment_list = 3;
 }
 
+message CountRequest {
+  int64 video_id = 1;
+}
+
+message CountResponse{
+  int64 commentCount = 1;
+}
+
 service CommentService {
   rpc Action(ActionRequest) returns (ActionResponse);
   rpc List(ListRequest) returns (ListResponse);
+  rpc Count(CountRequest) returns(CountResponse);
 }

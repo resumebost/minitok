@@ -178,6 +178,116 @@ func (x *ListResponse) fastReadField3(buf []byte, _type int8) (offset int, err e
 	return offset, nil
 }
 
+func (x *JudgeRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_JudgeRequest[number], err)
+}
+
+func (x *JudgeRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *JudgeRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *JudgeResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_JudgeResponse[number], err)
+}
+
+func (x *JudgeResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Is_Like, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
+func (x *CountRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CountRequest[number], err)
+}
+
+func (x *CountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *CountResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CountResponse[number], err)
+}
+
+func (x *CountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.FavoriteCount, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
 func (x *ActionRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -293,6 +403,79 @@ func (x *ListResponse) fastWriteField3(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteMessage(buf[offset:], 3, x.GetVideoList())
+	return offset
+}
+
+func (x *JudgeRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *JudgeRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Token == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetToken())
+	return offset
+}
+
+func (x *JudgeRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.VideoId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetVideoId())
+	return offset
+}
+
+func (x *JudgeResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *JudgeResponse) fastWriteField1(buf []byte) (offset int) {
+	if !x.Is_Like {
+		return offset
+	}
+	offset += fastpb.WriteBool(buf[offset:], 1, x.GetIs_Like())
+	return offset
+}
+
+func (x *CountRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *CountRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.VideoId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetVideoId())
+	return offset
+}
+
+func (x *CountResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *CountResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.FavoriteCount == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetFavoriteCount())
 	return offset
 }
 
@@ -414,6 +597,79 @@ func (x *ListResponse) sizeField3() (n int) {
 	return n
 }
 
+func (x *JudgeRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *JudgeRequest) sizeField1() (n int) {
+	if x.Token == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.GetToken())
+	return n
+}
+
+func (x *JudgeRequest) sizeField2() (n int) {
+	if x.VideoId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.GetVideoId())
+	return n
+}
+
+func (x *JudgeResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *JudgeResponse) sizeField1() (n int) {
+	if !x.Is_Like {
+		return n
+	}
+	n += fastpb.SizeBool(1, x.GetIs_Like())
+	return n
+}
+
+func (x *CountRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *CountRequest) sizeField1() (n int) {
+	if x.VideoId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetVideoId())
+	return n
+}
+
+func (x *CountResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *CountResponse) sizeField1() (n int) {
+	if x.FavoriteCount == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.GetFavoriteCount())
+	return n
+}
+
 var fieldIDToName_ActionRequest = map[int32]string{
 	1: "Token",
 	2: "VideoId",
@@ -434,6 +690,23 @@ var fieldIDToName_ListResponse = map[int32]string{
 	1: "StatusCode",
 	2: "StatusMsg",
 	3: "VideoList",
+}
+
+var fieldIDToName_JudgeRequest = map[int32]string{
+	1: "Token",
+	2: "VideoId",
+}
+
+var fieldIDToName_JudgeResponse = map[int32]string{
+	1: "Is_Like",
+}
+
+var fieldIDToName_CountRequest = map[int32]string{
+	1: "VideoId",
+}
+
+var fieldIDToName_CountResponse = map[int32]string{
+	1: "FavoriteCount",
 }
 
 var _ = video.File_video_model_proto

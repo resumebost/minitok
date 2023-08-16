@@ -19,3 +19,9 @@ func (s *CommentServiceImpl) List(ctx context.Context, req *comment.ListRequest)
 	// TODO: Your code here...
 	return
 }
+
+// Count implements the CommentServiceImpl interface.
+func (s *CommentServiceImpl) Count(ctx context.Context, req *comment.CountRequest) (resp *comment.CountResponse, err error) {
+	// TODO: Your code here...
+	return
+}

@@ -13,6 +13,7 @@ import (
 type Client interface {
 	Action(ctx context.Context, Req *comment.ActionRequest, callOptions ...callopt.Option) (r *comment.ActionResponse, err error)
 	List(ctx context.Context, Req *comment.ListRequest, callOptions ...callopt.Option) (r *comment.ListResponse, err error)
+	Count(ctx context.Context, Req *comment.CountRequest, callOptions ...callopt.Option) (r *comment.CountResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kCommentServiceClient) Action(ctx context.Context, Req *comment.ActionR
 func (p *kCommentServiceClient) List(ctx context.Context, Req *comment.ListRequest, callOptions ...callopt.Option) (r *comment.ListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.List(ctx, Req)
+}
+
+func (p *kCommentServiceClient) Count(ctx context.Context, Req *comment.CountRequest, callOptions ...callopt.Option) (r *comment.CountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Count(ctx, Req)
 }

@@ -26,7 +26,26 @@ message ListResponse {
   video.Video video_list = 3;
 }
 
+message JudgeRequest {
+  string token = 1;
+  int64 video_id = 2;
+}
+
+message JudgeResponse{
+  bool is_Like = 1;
+}
+
+message CountRequest {
+  int64 video_id = 1;
+}
+
+message CountResponse{
+  int64 favoriteCount = 1;
+}
+
 service FavoriteService {
   rpc Action(ActionRequest) returns (ActionResponse);
   rpc List(ListRequest) returns (ListResponse);
+  rpc Judge(JudgeRequest) returns (JudgeResponse);
+  rpc Count(CountRequest) returns(CountResponse);
 }

@@ -13,6 +13,8 @@ import (
 type Client interface {
 	Action(ctx context.Context, Req *favorite.ActionRequest, callOptions ...callopt.Option) (r *favorite.ActionResponse, err error)
 	List(ctx context.Context, Req *favorite.ListRequest, callOptions ...callopt.Option) (r *favorite.ListResponse, err error)
+	Judge(ctx context.Context, Req *favorite.JudgeRequest, callOptions ...callopt.Option) (r *favorite.JudgeResponse, err error)
+	Count(ctx context.Context, Req *favorite.CountRequest, callOptions ...callopt.Option) (r *favorite.CountResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +54,14 @@ func (p *kFavoriteServiceClient) Action(ctx context.Context, Req *favorite.Actio
 func (p *kFavoriteServiceClient) List(ctx context.Context, Req *favorite.ListRequest, callOptions ...callopt.Option) (r *favorite.ListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.List(ctx, Req)
+}
+
+func (p *kFavoriteServiceClient) Judge(ctx context.Context, Req *favorite.JudgeRequest, callOptions ...callopt.Option) (r *favorite.JudgeResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Judge(ctx, Req)
+}
+
+func (p *kFavoriteServiceClient) Count(ctx context.Context, Req *favorite.CountRequest, callOptions ...callopt.Option) (r *favorite.CountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Count(ctx, Req)
 }

@@ -24,6 +24,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"Action": kitex.NewMethodInfo(actionHandler, newActionArgs, newActionResult, false),
 		"List":   kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
+		"Judge":  kitex.NewMethodInfo(judgeHandler, newJudgeArgs, newJudgeResult, false),
+		"Count":  kitex.NewMethodInfo(countHandler, newCountArgs, newCountResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "favorite",
@@ -345,6 +347,312 @@ func (p *ListResult) GetResult() interface{} {
 	return p.Success
 }
 
+func judgeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(favorite.JudgeRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(favorite.FavoriteService).Judge(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *JudgeArgs:
+		success, err := handler.(favorite.FavoriteService).Judge(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*JudgeResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newJudgeArgs() interface{} {
+	return &JudgeArgs{}
+}
+
+func newJudgeResult() interface{} {
+	return &JudgeResult{}
+}
+
+type JudgeArgs struct {
+	Req *favorite.JudgeRequest
+}
+
+func (p *JudgeArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(favorite.JudgeRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *JudgeArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *JudgeArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *JudgeArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in JudgeArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *JudgeArgs) Unmarshal(in []byte) error {
+	msg := new(favorite.JudgeRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var JudgeArgs_Req_DEFAULT *favorite.JudgeRequest
+
+func (p *JudgeArgs) GetReq() *favorite.JudgeRequest {
+	if !p.IsSetReq() {
+		return JudgeArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *JudgeArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *JudgeArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type JudgeResult struct {
+	Success *favorite.JudgeResponse
+}
+
+var JudgeResult_Success_DEFAULT *favorite.JudgeResponse
+
+func (p *JudgeResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(favorite.JudgeResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *JudgeResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *JudgeResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *JudgeResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in JudgeResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *JudgeResult) Unmarshal(in []byte) error {
+	msg := new(favorite.JudgeResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *JudgeResult) GetSuccess() *favorite.JudgeResponse {
+	if !p.IsSetSuccess() {
+		return JudgeResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *JudgeResult) SetSuccess(x interface{}) {
+	p.Success = x.(*favorite.JudgeResponse)
+}
+
+func (p *JudgeResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *JudgeResult) GetResult() interface{} {
+	return p.Success
+}
+
+func countHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(favorite.CountRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(favorite.FavoriteService).Count(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *CountArgs:
+		success, err := handler.(favorite.FavoriteService).Count(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*CountResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newCountArgs() interface{} {
+	return &CountArgs{}
+}
+
+func newCountResult() interface{} {
+	return &CountResult{}
+}
+
+type CountArgs struct {
+	Req *favorite.CountRequest
+}
+
+func (p *CountArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(favorite.CountRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *CountArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *CountArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *CountArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in CountArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *CountArgs) Unmarshal(in []byte) error {
+	msg := new(favorite.CountRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var CountArgs_Req_DEFAULT *favorite.CountRequest
+
+func (p *CountArgs) GetReq() *favorite.CountRequest {
+	if !p.IsSetReq() {
+		return CountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *CountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CountArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type CountResult struct {
+	Success *favorite.CountResponse
+}
+
+var CountResult_Success_DEFAULT *favorite.CountResponse
+
+func (p *CountResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(favorite.CountResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *CountResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *CountResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *CountResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in CountResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *CountResult) Unmarshal(in []byte) error {
+	msg := new(favorite.CountResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *CountResult) GetSuccess() *favorite.CountResponse {
+	if !p.IsSetSuccess() {
+		return CountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *CountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*favorite.CountResponse)
+}
+
+func (p *CountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CountResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -370,6 +678,26 @@ func (p *kClient) List(ctx context.Context, Req *favorite.ListRequest) (r *favor
 	_args.Req = Req
 	var _result ListResult
 	if err = p.c.Call(ctx, "List", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Judge(ctx context.Context, Req *favorite.JudgeRequest) (r *favorite.JudgeResponse, err error) {
+	var _args JudgeArgs
+	_args.Req = Req
+	var _result JudgeResult
+	if err = p.c.Call(ctx, "Judge", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Count(ctx context.Context, Req *favorite.CountRequest) (r *favorite.CountResponse, err error) {
+	var _args CountArgs
+	_args.Req = Req
+	var _result CountResult
+	if err = p.c.Call(ctx, "Count", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
