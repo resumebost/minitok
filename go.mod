@@ -3,11 +3,13 @@ module minitok
 go 1.20
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.8+incompatible
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/kitex v0.6.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/satori/go.uuid v1.2.0
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.1

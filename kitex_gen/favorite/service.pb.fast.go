@@ -209,7 +209,16 @@ func (x *JudgeRequest) fastReadField1(buf []byte, _type int8) (offset int, err e
 }
 
 func (x *JudgeRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.VideoIdList = append(x.VideoIdList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -234,7 +243,16 @@ ReadFieldError:
 }
 
 func (x *JudgeResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Is_Like, offset, err = fastpb.ReadBool(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v bool
+			v, offset, err = fastpb.ReadBool(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.Is_LikeList = append(x.Is_LikeList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -259,7 +277,16 @@ ReadFieldError:
 }
 
 func (x *CountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.VideoIdList = append(x.VideoIdList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -284,7 +311,16 @@ ReadFieldError:
 }
 
 func (x *CountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.FavoriteCount, offset, err = fastpb.ReadInt64(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.FavoriteCountList = append(x.FavoriteCountList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -424,10 +460,15 @@ func (x *JudgeRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *JudgeRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetVideoId())
+	offset += fastpb.WriteListPacked(buf[offset:], 2, len(x.GetVideoIdList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -440,10 +481,15 @@ func (x *JudgeResponse) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *JudgeResponse) fastWriteField1(buf []byte) (offset int) {
-	if !x.Is_Like {
+	if len(x.Is_LikeList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteBool(buf[offset:], 1, x.GetIs_Like())
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetIs_LikeList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteBool(buf[offset:], numTagOrKey, x.GetIs_LikeList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -456,10 +502,15 @@ func (x *CountRequest) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *CountRequest) fastWriteField1(buf []byte) (offset int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetVideoId())
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetVideoIdList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -472,10 +523,15 @@ func (x *CountResponse) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *CountResponse) fastWriteField1(buf []byte) (offset int) {
-	if x.FavoriteCount == 0 {
+	if len(x.FavoriteCountList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetFavoriteCount())
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetFavoriteCountList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetFavoriteCountList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -615,10 +671,15 @@ func (x *JudgeRequest) sizeField1() (n int) {
 }
 
 func (x *JudgeRequest) sizeField2() (n int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.GetVideoId())
+	n += fastpb.SizeListPacked(2, len(x.GetVideoIdList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -631,10 +692,15 @@ func (x *JudgeResponse) Size() (n int) {
 }
 
 func (x *JudgeResponse) sizeField1() (n int) {
-	if !x.Is_Like {
+	if len(x.Is_LikeList) == 0 {
 		return n
 	}
-	n += fastpb.SizeBool(1, x.GetIs_Like())
+	n += fastpb.SizeListPacked(1, len(x.GetIs_LikeList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeBool(numTagOrKey, x.GetIs_LikeList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -647,10 +713,15 @@ func (x *CountRequest) Size() (n int) {
 }
 
 func (x *CountRequest) sizeField1() (n int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.GetVideoId())
+	n += fastpb.SizeListPacked(1, len(x.GetVideoIdList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -663,10 +734,15 @@ func (x *CountResponse) Size() (n int) {
 }
 
 func (x *CountResponse) sizeField1() (n int) {
-	if x.FavoriteCount == 0 {
+	if len(x.FavoriteCountList) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.GetFavoriteCount())
+	n += fastpb.SizeListPacked(1, len(x.GetFavoriteCountList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetFavoriteCountList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -694,19 +770,19 @@ var fieldIDToName_ListResponse = map[int32]string{
 
 var fieldIDToName_JudgeRequest = map[int32]string{
 	1: "Token",
-	2: "VideoId",
+	2: "VideoIdList",
 }
 
 var fieldIDToName_JudgeResponse = map[int32]string{
-	1: "Is_Like",
+	1: "Is_LikeList",
 }
 
 var fieldIDToName_CountRequest = map[int32]string{
-	1: "VideoId",
+	1: "VideoIdList",
 }
 
 var fieldIDToName_CountResponse = map[int32]string{
-	1: "FavoriteCount",
+	1: "FavoriteCountList",
 }
 
 var _ = video.File_video_model_proto

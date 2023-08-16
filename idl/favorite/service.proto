@@ -28,19 +28,19 @@ message ListResponse {
 
 message JudgeRequest {
   string token = 1;
-  int64 video_id = 2;
+  repeated int64 video_id_list = 2;
 }
 
 message JudgeResponse{
-  bool is_Like = 1;
+  repeated bool is_Like_list = 1;
 }
 
 message CountRequest {
-  int64 video_id = 1;
+  repeated int64 video_id_list = 1;
 }
 
 message CountResponse{
-  int64 favoriteCount = 1;
+  repeated int64 favoriteCount_list = 1;
 }
 
 service FavoriteService {

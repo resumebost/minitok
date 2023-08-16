@@ -1,3 +1,7 @@
 package rpc
 
-func InitForVideo() {}
+func InitForVideo() {
+	initUserRPC()
+	initFavoriteRPC()
+	initCommentRPC()
+}

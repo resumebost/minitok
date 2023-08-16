@@ -19,4 +19,11 @@ const (
 	MySQLDefaultDSN = "root:123456@tcp(localhost:3306)/minitok?charset=utf8&parseTime=True&loc=Local"
 	RedisAddress    = "127.0.0.1:6379"
 	RedisPassword   = "123456"
+
+	Endpoint        = "oss-cn-shanghai.aliyuncs.com"
+	AccessKeyID     = "LTAI5tGWWCBFpAj3mUGDa587"
+	AccessKeySecret = "Q34reeEcygLyJVBRBrBpgCXeClaa2E"
+	BucketName      = "minitok-video"
+	VideoBaseURL    = "video/"
+	CoverBaseURL    = "cover/"
 )

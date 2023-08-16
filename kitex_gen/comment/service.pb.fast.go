@@ -233,7 +233,16 @@ ReadFieldError:
 }
 
 func (x *CountRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.VideoIdList = append(x.VideoIdList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -258,7 +267,16 @@ ReadFieldError:
 }
 
 func (x *CountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.CommentCount, offset, err = fastpb.ReadInt64(buf, _type)
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.CommentCountList = append(x.CommentCountList, v)
+			return offset, err
+		})
 	return offset, err
 }
 
@@ -416,10 +434,15 @@ func (x *CountRequest) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *CountRequest) fastWriteField1(buf []byte) (offset int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetVideoId())
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetVideoIdList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -432,10 +455,15 @@ func (x *CountResponse) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *CountResponse) fastWriteField1(buf []byte) (offset int) {
-	if x.CommentCount == 0 {
+	if len(x.CommentCountList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetCommentCount())
+	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetCommentCountList()),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetCommentCountList()[numIdxOrVal])
+			return offset
+		})
 	return offset
 }
 
@@ -593,10 +621,15 @@ func (x *CountRequest) Size() (n int) {
 }
 
 func (x *CountRequest) sizeField1() (n int) {
-	if x.VideoId == 0 {
+	if len(x.VideoIdList) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.GetVideoId())
+	n += fastpb.SizeListPacked(1, len(x.GetVideoIdList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetVideoIdList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -609,10 +642,15 @@ func (x *CountResponse) Size() (n int) {
 }
 
 func (x *CountResponse) sizeField1() (n int) {
-	if x.CommentCount == 0 {
+	if len(x.CommentCountList) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.GetCommentCount())
+	n += fastpb.SizeListPacked(1, len(x.GetCommentCountList()),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.GetCommentCountList()[numIdxOrVal])
+			return n
+		})
 	return n
 }
 
@@ -642,9 +680,9 @@ var fieldIDToName_ListResponse = map[int32]string{
 }
 
 var fieldIDToName_CountRequest = map[int32]string{
-	1: "VideoId",
+	1: "VideoIdList",
 }
 
 var fieldIDToName_CountResponse = map[int32]string{
-	1: "CommentCount",
+	1: "CommentCountList",
 }

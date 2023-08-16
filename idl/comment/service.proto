@@ -30,11 +30,11 @@ message ListResponse {
 }
 
 message CountRequest {
-  int64 video_id = 1;
+  repeated int64 video_id_list = 1;
 }
 
 message CountResponse{
-  int64 commentCount = 1;
+  repeated int64 comment_count_list = 1;
 }
 
 service CommentService {

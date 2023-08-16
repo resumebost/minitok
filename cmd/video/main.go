@@ -10,6 +10,7 @@ import (
 	"minitok/cmd/video/rpc"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
+	"minitok/internal/util"
 	video "minitok/kitex_gen/video/videoservice"
 	"net"
 )
@@ -17,6 +18,7 @@ import (
 func initAll() {
 	dal.SetVideoDB()
 	rpc.InitForVideo()
+	util.InitOSS()
 }
 
 // TODO: 增加其它配置
