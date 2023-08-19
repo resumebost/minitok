@@ -1,4 +1,4 @@
-package util
+package oss
 
 import (
 	"bytes"

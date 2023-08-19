@@ -1,0 +1,28 @@
+api_service:
+  name: "api_service"
+  port: 8081
+
+user_service:
+  name: "user_service"
+  port: 8000
+
+video_service:
+  name: "video_service"
+  port: 8001
+
+comment_service:
+  name: "comment_service"
+  port: 8002
+
+favorite_service:
+  name: "favorite_service"
+  port: 8003
+
+etcd:
+  name: "etcd"
+  port: 2379
+
+redis:
+  name: "redis"
+  port: 6379
+  password: 123456

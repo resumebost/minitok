@@ -34,7 +34,9 @@ message CountRequest {
 }
 
 message CountResponse{
-  repeated int64 comment_count_list = 1;
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated int64 comment_count_list = 3;
 }
 
 service CommentService {

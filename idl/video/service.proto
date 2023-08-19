@@ -38,8 +38,19 @@ message PublishListResponse {
   repeated Video video_list = 3;
 }
 
+message GetVideosRequest {
+  repeated int64 video_ids = 1;
+}
+
+message GetVideosResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Video videos = 3;
+}
+
 service VideoService {
   rpc Feed(FeedRequest) returns (FeedResponse);
   rpc PublishAction(PublishActionRequest) returns (PublishActionResponse);
   rpc PublishList(PublishListRequest) returns (PublishListResponse);
+  rpc GetVideos(GetVideosRequest) returns (GetVideosResponse);
 }

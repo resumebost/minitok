@@ -6,6 +6,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.8+incompatible
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/kitex v0.6.2
+	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
 	github.com/gin-gonic/gin v1.9.1
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/redis/go-redis/v9 v9.0.5

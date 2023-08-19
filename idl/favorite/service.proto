@@ -32,7 +32,9 @@ message JudgeRequest {
 }
 
 message JudgeResponse{
-  repeated bool is_Like_list = 1;
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated bool is_Like_list = 3;
 }
 
 message CountRequest {
@@ -40,7 +42,9 @@ message CountRequest {
 }
 
 message CountResponse{
-  repeated int64 favoriteCount_list = 1;
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated int64 favoriteCount_list = 3;
 }
 
 service FavoriteService {

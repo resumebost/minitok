@@ -16,4 +16,5 @@ for service in "${services[@]}"; do
     kitex -I ../../idl -module ${project} -service ${service} \
         -use ${project}/kitex_gen \
         ../../idl/${service}/service.proto
+    rm ./kitex_info.yaml
 done
