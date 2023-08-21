@@ -5,7 +5,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	uuid "github.com/satori/go.uuid"
 	"minitok/cmd/video/dal"
-	"minitok/internal/conf"
+	"minitok/internal/constant"
 	"minitok/internal/jwt"
 	"minitok/internal/oss"
 	"minitok/internal/util"
@@ -13,6 +13,8 @@ import (
 	"os"
 	"sync"
 )
+
+var ossInfo = &constant.AllConstants.OSS
 
 type PublishActionService struct {
 	ctx context.Context
@@ -28,7 +30,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 
 	//存储视频信息到本地，截取封面
 	videoName := uuid.NewV4().String() + ".mp4"
-	videoPath := conf.VideoResourceFolder + videoName
+	videoPath := ossInfo.VideoResourceFolder + videoName
 
 	err := os.WriteFile(videoPath, req.Data, os.ModePerm)
 	if err != nil {
@@ -41,7 +43,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 		//return unierr.CoverGeneFiled
 		return err
 	}
-	coverPath := conf.CoverResourceFolder + coverName
+	coverPath := ossInfo.CoverResourceFolder + coverName
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -113,7 +115,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 		return err
 	}
 
-	UPLPrefix := "https://" + conf.BucketName + "." + conf.Endpoint + "/" + conf.VideoBaseURL
+	UPLPrefix := "https://" + ossInfo.BucketName + "." + ossInfo.Endpoint + "/" + ossInfo.VideoBaseURL
 
 	_, err = dal.CreateVideo(&dal.Video{
 		AuthorID: id,

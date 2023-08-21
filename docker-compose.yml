@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  mariadb:
+    image: "mariadb:latest"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=bd
+      - MYSQL_PASSWORD=123456
+
+  etcd:
+    image: "bitnami/etcd:latest"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_API=3
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+
+  config:
+    image: "bitnami/etcd:latest"
+    command: "/bin/sh /config/init-config.sh"
+    volumes:
+      - ./config:/config
+    depends_on:
+      - etcd
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	. "minitok/cmd/comment/dal"
-	. "minitok/cmd/favorite/dal"
-	. "minitok/cmd/user/dal"
-	. "minitok/cmd/video/dal"
+	comment "minitok/cmd/comment/dal"
+	favorite "minitok/cmd/favorite/dal"
+	user "minitok/cmd/user/dal"
+	video "minitok/cmd/video/dal"
 	"os"
 )
 
@@ -33,26 +33,26 @@ func main() {
 	}
 
 	m := DB.Migrator()
-	if !m.HasTable(&User{}) {
-		if err = m.CreateTable(&User{}); err != nil {
+	if !m.HasTable(&user.User{}) {
+		if err = m.CreateTable(&user.User{}); err != nil {
 			panic(err)
 		}
 	}
 
-	if !m.HasTable(&Video{}) {
-		if err = m.CreateTable(&Video{}); err != nil {
+	if !m.HasTable(&video.Video{}) {
+		if err = m.CreateTable(&video.Video{}); err != nil {
 			panic(err)
 		}
 	}
 
-	if !m.HasTable(&Comment{}) {
-		if err = m.CreateTable(&Comment{}); err != nil {
+	if !m.HasTable(&comment.Comment{}) {
+		if err = m.CreateTable(&comment.Comment{}); err != nil {
 			panic(err)
 		}
 	}
 
-	if !m.HasTable(&Favorite{}) {
-		if err = m.CreateTable(&Favorite{}); err != nil {
+	if !m.HasTable(&favorite.Favorite{}) {
+		if err = m.CreateTable(&favorite.Favorite{}); err != nil {
 			panic(err)
 		}
 	}

@@ -10,11 +10,11 @@ if [[ "$work_root" != */${project} ]]; then
 fi
 
 for service in "${services[@]}"; do
-    cd ${work_root}
-    kitex -I idl -module ${project} idl/${service}/service.proto
-    cd ${work_root}/cmd/${service}
-    kitex -I ../../idl -module ${project} -service ${service} \
+    cd "${work_root}" || exit 1
+    kitex -I idl -module ${project} idl/"${service}"/service.proto
+    cd "${work_root}"/cmd/"${service}" || exit 1
+    kitex -I ../../idl -module ${project} -service "${service}" \
         -use ${project}/kitex_gen \
-        ../../idl/${service}/service.proto
-    rm ./kitex_info.yaml
+        ../../idl/"${service}"/service.proto
+    rm -f ./kitex_info.yaml
 done

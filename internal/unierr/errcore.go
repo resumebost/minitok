@@ -11,7 +11,7 @@ type ErrCore struct {
 }
 
 func (e ErrCore) Error() string {
-	return fmt.Sprintf("err_code=%d, err_msg=%s", e.ErrCode, e.ErrMsg)
+	return fmt.Sprintf("ErrCode = %d, ErrMsg = %s", e.ErrCode, e.ErrMsg)
 }
 
 func NewErrCore(code int32, msg string) ErrCore {

@@ -1,17 +1,31 @@
 package dal
 
 import (
+	"context"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/redis/go-redis/v9"
-	"minitok/internal/conf"
+	"minitok/internal/constant"
+	"time"
 )
 
-// InitRedis TODO: 心跳和更多配置
+var redisConstants = &constant.AllConstants.Redis
+
 func InitRedis() *redis.Client {
 	c := redis.NewClient(&redis.Options{
-		Addr:     conf.RedisAddress,
-		Password: conf.RedisPassword,
+		Addr:     redisConstants.Addr(),
+		Password: redisConstants.Password,
 		DB:       0,
 		PoolSize: 100,
 	})
+
+	sec := time.Duration(5)
+	ctx, cancel := context.WithTimeout(context.Background(), sec*time.Second)
+	defer cancel()
+
+	_, err := c.Ping(ctx).Result()
+	if err != nil {
+		klog.Fatalf("Redis ping is unreachable in %v seconds: %v", sec, err)
+	}
+
 	return c
 }

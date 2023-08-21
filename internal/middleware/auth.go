@@ -10,6 +10,7 @@ import (
 // AuthMiddleware Gin middleware: 获取 ctx 中的 token 并检验合法性
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		ctx.Next()
 		// 取出 token string
 		str := ctx.Query("token")
 

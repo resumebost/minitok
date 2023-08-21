@@ -1,28 +1,53 @@
-api_service:
-  name: "api_service"
+api-service:
+  host: localhost
+  name: api_service
   port: 8081
 
-user_service:
-  name: "user_service"
+user-service:
+  host: localhost
+  name: user_service
   port: 8000
 
-video_service:
-  name: "video_service"
+video-service:
+  host: localhost
+  name: video_service
   port: 8001
 
-comment_service:
-  name: "comment_service"
+comment-service:
+  host: localhost
+  name: comment_service
   port: 8002
 
-favorite_service:
-  name: "favorite_service"
+favorite-service:
+  host: localhost
+  name: favorite_service
   port: 8003
 
 etcd:
-  name: "etcd"
+  host: localhost
+  name: etcd
   port: 2379
 
 redis:
-  name: "redis"
+  host: localhost
+  name: redis
   port: 6379
   password: 123456
+
+oss:
+  endpoint: oss-cn-shanghai.aliyuncs.com
+  access-key-id: LTAI5tGWWCBFpAj3mUGDa587
+  access-key-secret: Q34reeEcygLyJVBRBrBpgCXeClaa2E
+  bucket-name: minitok-video
+  cover-base-url:
+  video-base-url:
+  cover-resource-folder:
+  video-resource-folder:
+
+datasource:
+  host: localhost
+  port: 3307
+  username: root
+  password: 123456
+  database: minitok
+  settings: charset=utf8&parseTime=True&loc=Local

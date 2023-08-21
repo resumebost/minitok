@@ -1,22 +1,23 @@
 package dal
 
 import (
-	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"minitok/internal/conf"
+	"minitok/internal/constant"
 )
 
-// InitGorm Init TODO: 增加更多配置
+var datasourceConstants = &constant.AllConstants.Datasource
+
 func InitGorm() *gorm.DB {
-	db, err := gorm.Open(mysql.Open(conf.MySQLDefaultDSN),
+	db, err := gorm.Open(mysql.Open(datasourceConstants.DSNString()),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
 		})
 
 	if err != nil {
-		panic(fmt.Errorf("open db: %w", err))
+		klog.Fatalf("Gorm instance can not be established: %v", err)
 	}
 
 	return db

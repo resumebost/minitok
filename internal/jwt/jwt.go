@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type JWTClaims struct {
+type Claims struct {
 	ID       int64
 	Username string
 	jwt.StandardClaims
@@ -22,7 +22,7 @@ func GenToken(userid int64, username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(ExpireDuration)
 	// 创建
-	claims := JWTClaims{
+	claims := Claims{
 		ID:       userid,
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
@@ -36,9 +36,9 @@ func GenToken(userid int64, username string) (string, error) {
 }
 
 // ParseToken 解析 token 得到 JWTClaims 对象
-func ParseToken(token string) (*JWTClaims, error) {
+func ParseToken(token string) (*Claims, error) {
 	// 传入密钥解析 token, 得到 JWT Web Token 对象
-	jwtWebToken, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	jwtWebToken, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 
@@ -47,7 +47,7 @@ func ParseToken(token string) (*JWTClaims, error) {
 	}
 
 	// 返回私有声明
-	if claims, ok := jwtWebToken.Claims.(*JWTClaims); ok {
+	if claims, ok := jwtWebToken.Claims.(*Claims); ok {
 		return claims, nil
 	}
 

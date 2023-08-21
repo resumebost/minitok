@@ -9,7 +9,7 @@ import (
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"io"
 	"mime/multipart"
-	"minitok/internal/conf"
+	"minitok/internal/constant"
 	"os"
 )
 
@@ -26,6 +26,8 @@ func File2Bytes(file *multipart.FileHeader) ([]byte, error) {
 	}
 	return bytes, nil
 }
+
+var ossConstants = &constant.AllConstants.OSS
 
 func GetVideoCover(videoPath string, frameNum int64) (string, error) {
 	buf := bytes.NewBuffer(nil)
@@ -45,7 +47,7 @@ func GetVideoCover(videoPath string, frameNum int64) (string, error) {
 
 	coverName := uuid.NewV4().String() + ".png"
 
-	err = imaging.Save(img, conf.CoverResourceFolder+coverName)
+	err = imaging.Save(img, ossConstants.CoverResourceFolder+coverName)
 	if err != nil {
 		klog.Fatal(err)
 	}

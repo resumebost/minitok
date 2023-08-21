@@ -8,14 +8,44 @@
 - RPC 框架: kitex
 - 持久层框架: gorm
 - 服务注册/发现: etcd
+- 链路追踪: opentracing/jaeger
 
 ## 开发指南
 
-### 项目部署
+### 项目配置部署
 
-数据库 sql 文件在 `config` 下.
+数据库 sql 文件在 `config` 下, 用于直接查看表结构.
 
-TODO
+配置在 `config/config.yaml` 中修改.
+
+首先通过 `docker-compose up -d` 启动所有依赖, 然后在 `cmd/$SERVICE` 下运行:
+
+```shell
+bash build.sh
+output/bootstrap.sh
+```
+
+最后启动 api-service, 在 `cmd/api` 下运行 `go run .`.
+
+### Jaeger
+
+访问 `localhost:16686`.
+ 
+### ETCDKeeper
+
+运行 etcd keeper 容器:
+
+```shell
+docker run -it -d --name etcdkeeper \
+-p 8080:8080 \
+deltaprojects/etcdkeeper
+```
+
+在进入 GUI 后将地址换为 docker 网卡的地址, 通常可以通过 `ip addr` 查看 docker0 选项获得.
+
+一般来说就是: 172.17.0.1:2379.
+
+可以通过键 `minitok/config` 查看配置.
 
 ### 规范
 
@@ -34,6 +64,11 @@ TODO
 - 在 `cmd/video/rpc/` 下建立需要用到的 rpc client:
   - 将 init 函数调用放到 `cmd/video/rpc/init.go` 里的 InitForVideo 中
   - 可以仿照 `cmd/api/rpc/` 下的 rpc client 建立方法
+
+### 注意事项
+
+- 经过 JWT 中间件验证之后, ctx 会以键值对的形式保存用户的 username 和 id, key 就是 `username` 和 `id`
+- `internal/constant/constant.go` 内的 InitConstant 函数必须先于任何配置调用
 
 ### 错误处理
 
@@ -68,12 +103,9 @@ func doFeed(t assert.TestingT) {
 }
 ```
 
-命令行的方式待调研, 可以看一下 grpcui.
-
 ### 日志
 
-暂时用 klog.
+使用 klog.
 
-### 其它
+在需要使用 panic 的场景建议使用 klog.Fatalf.
 
-- 经过 JWT 中间件验证之后, ctx 会以键值对的形式保存用户的 username 和 id, key 就是 `username` 和 `id`.
