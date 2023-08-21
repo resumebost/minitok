@@ -1,11 +1,14 @@
 package rpc
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/video"
 	"minitok/kitex_gen/video/videoservice"
 	"time"
 )
@@ -34,4 +37,15 @@ func initVideoRPC() {
 	}
 
 	videoClient = c
+}
+
+func VideoPublishAction(ctx context.Context, req *video.PublishActionRequest) (*video.PublishActionResponse, error) {
+	resp, err := videoClient.PublishAction(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }

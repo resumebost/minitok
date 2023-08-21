@@ -3,15 +3,12 @@ package oss
 import (
 	"bytes"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	uuid "github.com/satori/go.uuid"
 	"minitok/internal/conf"
 )
 
 var (
-	client       *oss.Client
-	bucket       *oss.Bucket
-	videoBaseURL string
-	coverBaseURL string
+	client *oss.Client
+	bucket *oss.Bucket
 )
 
 func InitOSS() {
@@ -26,7 +23,7 @@ func InitOSS() {
 	logLevel := oss.SetLogLevel(oss.LogOff)
 
 	// 创建OSSClient实例
-	client, err := oss.New(conf.Endpoint, conf.AccessKeyID, conf.AccessKeySecret, crc, logLevel)
+	client, err := oss.New(conf.AccessKeyID, conf.AccessKeySecret, conf.Endpoint, crc, logLevel)
 	if err != nil {
 		panic(err)
 	}
@@ -36,44 +33,40 @@ func InitOSS() {
 		panic(err)
 	}
 
-	videoBaseURL = conf.VideoBaseURL
-	coverBaseURL = conf.CoverBaseURL
+	//videoBaseURL = conf.VideoBaseURL
+	//coverBaseURL = conf.CoverBaseURL
 }
 
-func UploadVideo(video []byte) (string, error) {
+func UploadVideo(video []byte, objectName string) error {
 	reader := bytes.NewReader(video)
-	objectName := videoBaseURL + uuid.NewV4().String() + ".mp4"
 	err := bucket.PutObject(objectName, reader)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return objectName, nil
+	return nil
 }
 
-func UploadCover(cover []byte) (string, error) {
+func UploadCover(cover []byte, objectName string) error {
 	reader := bytes.NewReader(cover)
-	objectName := coverBaseURL + uuid.NewV4().String() + ".png"
 	err := bucket.PutObject(objectName, reader)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return objectName, nil
+	return nil
 }
 
-func UploadLocalVideo(localVideoPath string) (string, error) {
-	objectName := videoBaseURL + uuid.NewV4().String() + ".mp4"
+func UploadLocalVideo(localVideoPath string, objectName string) error {
 	err := bucket.PutObjectFromFile(objectName, localVideoPath)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return objectName, nil
+	return nil
 }
 
-func UploadLocalCover(localCoverPath string) (string, error) {
-	objectName := coverBaseURL + uuid.NewV4().String() + ".png"
+func UploadLocalCover(localCoverPath string, objectName string) error {
 	err := bucket.PutObjectFromFile(objectName, localCoverPath)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return objectName, nil
+	return nil
 }

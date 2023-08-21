@@ -1,6 +1,7 @@
 package main
 
 import (
+	"minitok/cmd/api/rpc"
 	"minitok/internal/conf"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 
 func initAll(e *gin.Engine) {
 	initRouter(e)
+	rpc.InitRPC()
 }
 
 func main() {

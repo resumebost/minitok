@@ -118,7 +118,7 @@ CREATE TABLE `videos` (
   `created_at` datetime(3) DEFAULT NULL,
   `updated_at` datetime(3) DEFAULT NULL,
   `deleted_at` datetime(3) DEFAULT NULL,
-  `author_id` varchar(191) DEFAULT NULL,
+  `author_id` bigint(20) unsigned DEFAULT NULL,
   `play_url` longtext DEFAULT NULL,
   `cover_url` longtext DEFAULT NULL,
   `title` longtext DEFAULT NULL,

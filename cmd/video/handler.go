@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"minitok/cmd/video/service"
+	"minitok/internal/unierr"
 	video "minitok/kitex_gen/video"
 )
 
@@ -16,8 +18,18 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
-	// TODO: Your code here...
-	return
+	//println(ctx.Value("id"))
+
+	resp = nil
+
+	err = service.NewUploadVideoService(ctx).PublishVideo(req)
+	if err != nil {
+		resp = &video.PublishActionResponse{StatusCode: unierr.VideoPublishFiled.ErrCode, StatusMsg: unierr.VideoPublishFiled.ErrMsg}
+		return resp, err
+	}
+
+	resp = &video.PublishActionResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg}
+	return resp, nil
 }
 
 // PublishList implements the VideoServiceImpl interface.
