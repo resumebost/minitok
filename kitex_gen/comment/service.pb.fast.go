@@ -253,6 +253,16 @@ func (x *CountResponse) FastRead(buf []byte, _type int8, number int32) (offset i
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -267,6 +277,16 @@ ReadFieldError:
 }
 
 func (x *CountResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.StatusCode, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *CountResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *CountResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	offset, err = fastpb.ReadList(buf, _type,
 		func(buf []byte, _type int8) (n int, err error) {
 			var v int64
@@ -451,14 +471,32 @@ func (x *CountResponse) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
 	return offset
 }
 
 func (x *CountResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.StatusCode == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetStatusCode())
+	return offset
+}
+
+func (x *CountResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.StatusMsg == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetStatusMsg())
+	return offset
+}
+
+func (x *CountResponse) fastWriteField3(buf []byte) (offset int) {
 	if len(x.CommentCountList) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetCommentCountList()),
+	offset += fastpb.WriteListPacked(buf[offset:], 3, len(x.GetCommentCountList()),
 		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
 			offset := 0
 			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetCommentCountList()[numIdxOrVal])
@@ -638,14 +676,32 @@ func (x *CountResponse) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
 	return n
 }
 
 func (x *CountResponse) sizeField1() (n int) {
+	if x.StatusCode == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(1, x.GetStatusCode())
+	return n
+}
+
+func (x *CountResponse) sizeField2() (n int) {
+	if x.StatusMsg == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.GetStatusMsg())
+	return n
+}
+
+func (x *CountResponse) sizeField3() (n int) {
 	if len(x.CommentCountList) == 0 {
 		return n
 	}
-	n += fastpb.SizeListPacked(1, len(x.GetCommentCountList()),
+	n += fastpb.SizeListPacked(3, len(x.GetCommentCountList()),
 		func(numTagOrKey, numIdxOrVal int32) int {
 			n := 0
 			n += fastpb.SizeInt64(numTagOrKey, x.GetCommentCountList()[numIdxOrVal])
@@ -684,5 +740,7 @@ var fieldIDToName_CountRequest = map[int32]string{
 }
 
 var fieldIDToName_CountResponse = map[int32]string{
-	1: "CommentCountList",
+	1: "StatusCode",
+	2: "StatusMsg",
+	3: "CommentCountList",
 }

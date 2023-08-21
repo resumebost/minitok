@@ -1,11 +1,14 @@
 package rpc
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/comment"
 	"minitok/kitex_gen/comment/commentservice"
 	"time"
 )
@@ -34,13 +37,13 @@ func initCommentRPC() {
 	commentClient = c
 }
 
-//func CountComment(ctx context.Context, req *comment.MCountVideoCommentRequest) (*comment.MCountVideoCommentResponse, error) {
-//	resp, err := commentClient.MCountVideoComment(ctx, req)
-//	if err != nil {
-//		return nil, err
-//	}
-//	if _, ok := erren.ErrorMap[resp.StatusCode]; ok {
-//		return nil, erren.NewErrNo(resp.StatusCode, *resp.StatusMsg)
-//	}
-//	return resp, nil
-//}
+func CountComment(ctx context.Context, req *comment.CountRequest) (*comment.CountResponse, error) {
+	resp, err := commentClient.Count(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}

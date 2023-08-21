@@ -8,10 +8,10 @@ import (
 	"minitok/internal/conf"
 	"minitok/internal/jwt"
 	"minitok/internal/oss"
-	"minitok/internal/unierr"
 	"minitok/internal/util"
 	"minitok/kitex_gen/video"
 	"os"
+	"sync"
 )
 
 type PublishActionService struct {
@@ -25,44 +25,85 @@ func NewUploadVideoService(ctx context.Context) *PublishActionService {
 }
 
 func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) error {
+
 	//存储视频信息到本地，截取封面
 	videoName := uuid.NewV4().String() + ".mp4"
 	videoPath := conf.VideoResourceFolder + videoName
+
 	err := os.WriteFile(videoPath, req.Data, os.ModePerm)
 	if err != nil {
-		return unierr.VideoPublishFiled
+		//return unierr.VideoPublishFiled
+		return err
 	}
 
 	coverName, err := util.GetVideoCover(videoPath, 3)
 	if err != nil {
-		return unierr.CoverGeneFiled
+		//return unierr.CoverGeneFiled
+		return err
 	}
+	coverPath := conf.CoverResourceFolder + coverName
+
+	var wg sync.WaitGroup
+	wg.Add(2)
 
 	//上传视频到OSS
-	err = oss.UploadLocalVideo(videoPath, videoName)
-	if err != nil {
-		return unierr.VideoPublishFiled
-	}
+	go func() {
+		defer func() {
+			if err := recover(); err != nil { //防止协程崩溃，保持健壮性
+				klog.Fatalf("upload video to oss filed: %s", err)
+			}
+		}()
+		defer wg.Done()
+		err = oss.UploadLocalVideo(videoPath, videoName)
+		if err != nil {
+			klog.Fatalf("upload video to oss filed: %s", err)
+		}
+	}()
 
 	//上传视频封面到OSS
-	coverPath := conf.CoverResourceFolder + coverName
-	err = oss.UploadLocalCover(coverPath, coverName)
-	if err != nil {
-		return unierr.CoverUploadFiled
-	}
-
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("upload cover to oss filed: %s", err)
+			}
+		}()
+		defer wg.Done()
+
+		err = oss.UploadLocalCover(coverPath, coverName)
+		if err != nil {
+			klog.Fatalf("upload cover to oss filed: %s", err)
+		}
+	}()
+	wg.Wait()
+
+	wg.Add(2)
+	//删除本地暂存的视频
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("本地视频删除失败: %s", err)
+			}
+		}()
+		defer wg.Done()
 		err := os.Remove(videoPath)
 		if err != nil {
-			klog.Fatal("本地视频删除失败", err)
+			klog.Fatalf("本地视频删除失败: %s", err)
 		}
 	}()
 	go func() {
+		defer func() {
+			if err := recover(); err != nil { //防止协程崩溃，保持健壮性
+				klog.Fatalf("本地封面删除失败: %s", err)
+			}
+		}()
+		defer wg.Done()
 		err := os.Remove(coverPath)
 		if err != nil {
-			klog.Fatal("本地封面删除失败", err)
+			klog.Fatalf("本地封面删除失败: %s", err)
 		}
 	}()
+	wg.Wait()
+
 	//存储到数据库
 	//id := s.ctx.Value("id")
 	claims, err := jwt.ParseToken(req.Token)

@@ -1,11 +1,14 @@
 package rpc
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/user"
 	"minitok/kitex_gen/user/userservice"
 	"time"
 )
@@ -33,4 +36,15 @@ func initUserRPC() {
 	}
 
 	userClient = c
+}
+
+func GetUserInfo(ctx context.Context, req *user.InfoRequest) (*user.InfoResponse, error) {
+	resp, err := userClient.Info(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }

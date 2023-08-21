@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -40,7 +41,42 @@ func initVideoRPC() {
 }
 
 func VideoPublishAction(ctx context.Context, req *video.PublishActionRequest) (*video.PublishActionResponse, error) {
+	fmt.Println("2222222")
 	resp, err := videoClient.PublishAction(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("resp,,,")
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func VideoPublishList(ctx context.Context, req *video.PublishListRequest) (*video.PublishListResponse, error) {
+	resp, err := videoClient.PublishList(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func GetVideoList(ctx context.Context, req *video.GetVideosRequest) (*video.GetVideosResponse, error) {
+	resp, err := videoClient.GetVideos(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func Feed(ctx context.Context, req *video.FeedRequest) (*video.FeedResponse, error) {
+	resp, err := videoClient.Feed(ctx, req)
 	if err != nil {
 		return nil, err
 	}

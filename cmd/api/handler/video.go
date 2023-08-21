@@ -10,6 +10,17 @@ import (
 )
 
 func VideoFeed(c *gin.Context) {
+	var req video.FeedRequest
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusOK, err)
+		return
+	}
+
+	//若时间为空则默认当前时间
+	//TODO
+	//解析时间
+
 }
 
 func VideoPublishAction(c *gin.Context) {
@@ -41,8 +52,27 @@ func VideoPublishAction(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, resp)
-	return
 }
 
 func VideoPublishList(c *gin.Context) {
+	var req video.PublishListRequest
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusOK, err)
+		return
+	}
+
+	if req.UserId <= 0 {
+		c.JSON(http.StatusOK, unierr.IllegalParams)
+		return
+	}
+
+	resp, err := rpc.VideoPublishList(c.Request.Context(), &video.PublishListRequest{
+		UserId: req.UserId,
+		Token:  req.Token,
+	})
+	if err != nil {
+		c.JSON(http.StatusOK, unierr.GetPublishListFiled)
+		return
+	}
+	c.JSON(http.StatusOK, resp)
 }

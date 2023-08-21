@@ -25,6 +25,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"Feed":          kitex.NewMethodInfo(feedHandler, newFeedArgs, newFeedResult, false),
 		"PublishAction": kitex.NewMethodInfo(publishActionHandler, newPublishActionArgs, newPublishActionResult, false),
 		"PublishList":   kitex.NewMethodInfo(publishListHandler, newPublishListArgs, newPublishListResult, false),
+		"GetVideos":     kitex.NewMethodInfo(getVideosHandler, newGetVideosArgs, newGetVideosResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -499,6 +500,159 @@ func (p *PublishListResult) GetResult() interface{} {
 	return p.Success
 }
 
+func getVideosHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.GetVideosRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.VideoService).GetVideos(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetVideosArgs:
+		success, err := handler.(video.VideoService).GetVideos(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetVideosResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetVideosArgs() interface{} {
+	return &GetVideosArgs{}
+}
+
+func newGetVideosResult() interface{} {
+	return &GetVideosResult{}
+}
+
+type GetVideosArgs struct {
+	Req *video.GetVideosRequest
+}
+
+func (p *GetVideosArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(video.GetVideosRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetVideosArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetVideosArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetVideosArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetVideosArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetVideosArgs) Unmarshal(in []byte) error {
+	msg := new(video.GetVideosRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetVideosArgs_Req_DEFAULT *video.GetVideosRequest
+
+func (p *GetVideosArgs) GetReq() *video.GetVideosRequest {
+	if !p.IsSetReq() {
+		return GetVideosArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetVideosArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetVideosArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetVideosResult struct {
+	Success *video.GetVideosResponse
+}
+
+var GetVideosResult_Success_DEFAULT *video.GetVideosResponse
+
+func (p *GetVideosResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(video.GetVideosResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetVideosResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetVideosResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetVideosResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetVideosResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetVideosResult) Unmarshal(in []byte) error {
+	msg := new(video.GetVideosResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetVideosResult) GetSuccess() *video.GetVideosResponse {
+	if !p.IsSetSuccess() {
+		return GetVideosResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetVideosResult) SetSuccess(x interface{}) {
+	p.Success = x.(*video.GetVideosResponse)
+}
+
+func (p *GetVideosResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetVideosResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -534,6 +688,16 @@ func (p *kClient) PublishList(ctx context.Context, Req *video.PublishListRequest
 	_args.Req = Req
 	var _result PublishListResult
 	if err = p.c.Call(ctx, "PublishList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetVideos(ctx context.Context, Req *video.GetVideosRequest) (r *video.GetVideosResponse, err error) {
+	var _args GetVideosArgs
+	_args.Req = Req
+	var _result GetVideosResult
+	if err = p.c.Call(ctx, "GetVideos", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -1,11 +1,14 @@
 package rpc
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"minitok/internal/conf"
 	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/favorite"
 	"minitok/kitex_gen/favorite/favoriteservice"
 	"time"
 )
@@ -32,4 +35,26 @@ func initFavoriteRPC() {
 		panic(err)
 	}
 	favoriteClient = c
+}
+
+func CountFavorite(ctx context.Context, req *favorite.CountRequest) (*favorite.CountResponse, error) {
+	resp, err := favoriteClient.Count(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func JudgeFavorite(ctx context.Context, req *favorite.JudgeRequest) (*favorite.JudgeResponse, error) {
+	resp, err := favoriteClient.Judge(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }

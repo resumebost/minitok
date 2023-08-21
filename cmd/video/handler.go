@@ -12,14 +12,22 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = nil
+
+	videoList, nextTime, err := service.NewFeedService(ctx).Feed(req)
+	if err != nil {
+		resp = &video.FeedResponse{StatusCode: unierr.GetFeedFiled.ErrCode, StatusMsg: unierr.GetFeedFiled.ErrMsg}
+		return resp, err
+	}
+
+	resp = &video.FeedResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, VideoList: videoList, NextTime: nextTime}
+	return resp, nil
 }
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	//println(ctx.Value("id"))
-
+	//fmt.Println("进入handler")
 	resp = nil
 
 	err = service.NewUploadVideoService(ctx).PublishVideo(req)
@@ -29,11 +37,38 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	}
 
 	resp = &video.PublishActionResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg}
+	//if resp != nil {
+	//	fmt.Println("handler返回: " + resp.String())
+	//} else {
+	//	fmt.Println("handler返回resp为nil")
+	//}
 	return resp, nil
 }
 
 // PublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = nil
+
+	videoList, err := service.NewPublishListService(ctx).PublishList(req)
+	if err != nil {
+		resp = &video.PublishListResponse{StatusCode: unierr.GetVideoListFiled.ErrCode, StatusMsg: unierr.GetVideoListFiled.ErrMsg}
+		return resp, err
+	}
+
+	resp = &video.PublishListResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, VideoList: videoList}
+	return resp, nil
+}
+
+// GetVideos implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetVideos(ctx context.Context, req *video.GetVideosRequest) (resp *video.GetVideosResponse, err error) {
+	resp = nil
+
+	videoList, err := service.NewVideoListService(ctx).GetVideos(req)
+	if err != nil {
+		resp = &video.GetVideosResponse{StatusCode: unierr.GetVideoListFiled.ErrCode, StatusMsg: unierr.GetVideoListFiled.ErrMsg}
+		return resp, err
+	}
+
+	resp = &video.GetVideosResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, Videos: videoList}
+	return resp, nil
 }
