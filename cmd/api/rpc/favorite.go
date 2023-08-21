@@ -1,15 +1,19 @@
 package rpc
 
 import (
+	"context"
+	"minitok/internal/constant"
+	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/favorite"
+	"minitok/kitex_gen/favorite/favoriteservice"
+	"time"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	opentracing "github.com/kitex-contrib/tracer-opentracing"
-	"minitok/internal/constant"
-	"minitok/internal/middleware"
-	"minitok/kitex_gen/favorite/favoriteservice"
-	"time"
 )
 
 var favoriteClient favoriteservice.Client
@@ -38,4 +42,46 @@ func initFavoriteRPC() {
 	}
 
 	favoriteClient = c
+}
+
+
+func FavoriteAction(ctx context.Context, req *favorite.ActionRequest) (*favorite.ActionResponse, error) {
+	resp, err := favoriteClient.Action(ctx, req)
+
+	if err != nil {
+		return resp, err
+	}
+	if resp == nil {
+		resp = &favorite.ActionResponse{
+			StatusCode: unierr.InternalError.ErrCode,
+			StatusMsg:  "RPC response is nil",
+		}
+		return resp, nil
+	}
+
+	//业务超时
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func FavoriteList(ctx context.Context, req *favorite.ListRequest) (*favorite.ListResponse, error) {
+	resp, err := favoriteClient.List(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+	if resp == nil {
+		resp = &favorite.ListResponse{
+			StatusCode: unierr.InternalError.ErrCode,
+			StatusMsg:  "RPC response is nil",
+		}
+		return resp, nil
+	}
+
+	//业务超时
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }
