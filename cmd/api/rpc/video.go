@@ -2,8 +2,8 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -45,13 +45,13 @@ func initVideoRPC() {
 }
 
 func VideoPublishAction(ctx context.Context, req *video.PublishActionRequest) (*video.PublishActionResponse, error) {
-	fmt.Println("2222222")
-	resp, err := videoClient.PublishAction(ctx, req)
+	resp, err := videoClient.PublishAction(ctx, req, callopt.WithRPCTimeout(180*time.Second))
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("resp,,,")
+
 	if resp.StatusCode != 0 {
+		//fmt.Println("rpc return resp.StatusCode!=0")
 		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
 	}
 	return resp, nil
