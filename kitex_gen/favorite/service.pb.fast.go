@@ -174,7 +174,7 @@ func (x *ListResponse) fastReadField3(buf []byte, _type int8) (offset int, err e
 	if err != nil {
 		return offset, err
 	}
-	x.VideoList = &v
+	x.VideoList = append(x.VideoList, &v)
 	return offset, nil
 }
 
@@ -478,7 +478,9 @@ func (x *ListResponse) fastWriteField3(buf []byte) (offset int) {
 	if x.VideoList == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 3, x.GetVideoList())
+	for i := range x.GetVideoList() {
+		offset += fastpb.WriteMessage(buf[offset:], 3, x.GetVideoList()[i])
+	}
 	return offset
 }
 
@@ -725,7 +727,9 @@ func (x *ListResponse) sizeField3() (n int) {
 	if x.VideoList == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(3, x.GetVideoList())
+	for i := range x.GetVideoList() {
+		n += fastpb.SizeMessage(3, x.GetVideoList()[i])
+	}
 	return n
 }
 

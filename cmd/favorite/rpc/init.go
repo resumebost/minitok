@@ -1,3 +1,6 @@
 package rpc
 
-func InitForFavorite() {}
+func InitForFavorite() {
+	initVideoRPC()
+	// initUserRPC()
+}

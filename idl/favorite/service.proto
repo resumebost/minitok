@@ -23,7 +23,7 @@ message ListRequest {
 message ListResponse {
   int32 status_code = 1;
   string status_msg = 2;
-  video.Video video_list = 3;
+  repeated video.Video video_list = 3;
 }
 
 message JudgeRequest {
