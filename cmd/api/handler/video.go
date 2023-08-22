@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"minitok/cmd/api/rpc"
 	"minitok/internal/unierr"

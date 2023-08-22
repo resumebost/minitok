@@ -10,8 +10,13 @@ import (
 // AuthMiddleware Gin middleware: 获取 ctx 中的 token 并检验合法性
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 取出 token string
+		// 从 query 中取出 token string
 		str := ctx.Query("token")
+
+		// 从 multiform 中取出 token string
+		if len(str) == 0 {
+			str = ctx.PostForm("token")
+		}
 
 		if len(str) == 0 {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, unierr.NoTokenError)

@@ -25,21 +25,23 @@
 
 ## 示例
 
-1. 新增功能: 
+新增功能: 
+
 ```bash
 git add .
 git commit -m "feat: 添加用户登录功能"
 ```
 
-2. 修复bug: 
+修复bug: 
+
 ```bash
 git add .
 git commit -m "fix: 修复登录 bug"
 ```
 
-3. 更新文档: 
+更新文档: 
+
 ```bash
 git add  README.md
 git commit -m "docs: 更新安装说明"
 ```
-
