@@ -10,7 +10,7 @@ type ServiceInfo struct {
 	Port int    `mapstructure:"port"`
 }
 
-func (s ServiceInfo) Addr() string {
+func (s *ServiceInfo) Addr() string {
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }
 
@@ -27,7 +27,7 @@ type RedisInfo struct {
 	Password string `mapstructure:"password"`
 }
 
-func (r RedisInfo) Addr() string {
+func (r *RedisInfo) Addr() string {
 	return fmt.Sprintf("%s:%d", r.Host, r.Port)
 }
 
@@ -51,7 +51,7 @@ type DatasourceInfo struct {
 	Settings string `mapstructure:"settings"`
 }
 
-func (d DatasourceInfo) DSNString() string {
+func (d *DatasourceInfo) DSNString() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
 		d.Username,
 		d.Password,
