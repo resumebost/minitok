@@ -57,8 +57,6 @@ func VideoPublishAction(c *gin.Context) {
 func VideoPublishList(c *gin.Context) {
 	var req video.PublishListRequest
 	// BUG 应该用 c.Query 而不是 c.ShouldBind
-	// GET 请求的参数通过 ?a=1&b=2 来传递
-	// RPC 服务的连接在我本机测试没问题
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(http.StatusOK, err)
 		return

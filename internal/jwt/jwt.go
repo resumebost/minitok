@@ -15,7 +15,7 @@ type Claims struct {
 // 密钥和过期时间
 var secret = []byte("minitok-secret")
 
-const ExpireDuration = 300 * time.Second
+const ExpireDuration = 7200 * time.Second
 
 // GenToken 生成 JWT token
 func GenToken(userid int64, username string) (string, error) {

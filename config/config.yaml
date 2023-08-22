@@ -41,8 +41,8 @@ oss:
   bucket-name: minitok-video
   cover-base-url:
   video-base-url:
-  cover-resource-folder:
-  video-resource-folder:
+  cover-resource-folder: webresource/cover/
+  video-resource-folder: webresource/video/
 
 datasource:
   host: localhost

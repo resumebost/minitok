@@ -25,9 +25,10 @@ func InitOSS() {
 	logLevel := oss.SetLogLevel(oss.LogOff)
 
 	// 创建OSSClient实例
-	client, err := oss.New(ossConstants.AccessKeyID,
+	client, err := oss.New(ossConstants.Endpoint,
+		ossConstants.AccessKeyID,
 		ossConstants.AccessKeySecret,
-		ossConstants.Endpoint,
+
 		crc,
 		logLevel)
 	if err != nil {

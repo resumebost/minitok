@@ -34,13 +34,11 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 
 	err := os.WriteFile(videoPath, req.Data, os.ModePerm)
 	if err != nil {
-		//return unierr.VideoPublishFiled
 		return err
 	}
 
 	coverName, err := util.GetVideoCover(videoPath, 3)
 	if err != nil {
-		//return unierr.CoverGeneFiled
 		return err
 	}
 	coverPath := ossInfo.CoverResourceFolder + coverName
@@ -51,7 +49,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 	//上传视频到OSS
 	go func() {
 		defer func() {
-			if err := recover(); err != nil { //防止协程崩溃，保持健壮性
+			if err := recover(); err != nil {
 				klog.Fatalf("upload video to oss filed: %s", err)
 			}
 		}()
@@ -78,7 +76,8 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 	}()
 	wg.Wait()
 
-	wg.Add(2)
+	var wg2 sync.WaitGroup
+	wg2.Add(2)
 	//删除本地暂存的视频
 	go func() {
 		defer func() {
@@ -86,7 +85,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 				klog.Fatalf("本地视频删除失败: %s", err)
 			}
 		}()
-		defer wg.Done()
+		defer wg2.Done()
 		err := os.Remove(videoPath)
 		if err != nil {
 			klog.Fatalf("本地视频删除失败: %s", err)
@@ -98,13 +97,13 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 				klog.Fatalf("本地封面删除失败: %s", err)
 			}
 		}()
-		defer wg.Done()
+		defer wg2.Done()
 		err := os.Remove(coverPath)
 		if err != nil {
 			klog.Fatalf("本地封面删除失败: %s", err)
 		}
 	}()
-	wg.Wait()
+	wg2.Wait()
 
 	//存储到数据库
 	//id := s.ctx.Value("id")

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"minitok/cmd/video/service"
 	"minitok/internal/unierr"
 	video "minitok/kitex_gen/video"
@@ -27,22 +26,18 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
-	//println(ctx.Value("id"))
-	fmt.Println("进入handler")
+	//fmt.Println("进入handler")
 	resp = nil
 
 	err = service.NewUploadVideoService(ctx).PublishVideo(req)
 	if err != nil {
 		resp = &video.PublishActionResponse{StatusCode: unierr.VideoPublishFiled.ErrCode, StatusMsg: unierr.VideoPublishFiled.ErrMsg}
+		//fmt.Println("videp handler: " + err.Error())
 		return resp, err
 	}
 
 	resp = &video.PublishActionResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg}
-	//if resp != nil {
-	//	fmt.Println("handler返回: " + resp.String())
-	//} else {
-	//	fmt.Println("handler返回resp为nil")
-	//}
+	//fmt.Println("video服务无问题")
 	return resp, nil
 }
 
