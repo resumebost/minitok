@@ -14,10 +14,6 @@ var (
 )
 
 func InitOSS() {
-	// 设置连接数为10，每个主机的最大闲置连接数为20，每个主机的最大连接数为20。
-	// conn := oss.MaxConns(10,20,20)
-	// 设置HTTP连接超时时间为20秒，HTTP读取或写入超时时间为60秒。
-	// time := oss.Timeout(20,60)
 
 	// 开启CRC加密
 	crc := oss.EnableCRC(true)
