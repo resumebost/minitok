@@ -39,7 +39,8 @@ message PublishListResponse {
 }
 
 message GetVideosRequest {
-  repeated int64 video_ids = 1;
+  string token = 1;
+  repeated int64 video_ids = 2;
 }
 
 message GetVideosResponse {

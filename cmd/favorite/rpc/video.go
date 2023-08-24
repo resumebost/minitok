@@ -47,10 +47,12 @@ func initVideoRPC() {
 
 // 请求查询
 // GetVideosInfo multiple get list of video info
-func GetVideosInfo(ctx context.Context, videoIDs []int64) (map[int64]*video.Video, error) {
+func GetVideosInfo(ctx context.Context,token string, videoIDs []int64) (map[int64]*video.Video, error) {
 	req := &video.GetVideosRequest{
+		Token: token,
 		VideoIds: videoIDs,
 	}
+	fmt.Println("#############rpc的token：",req.Token)
 
 	resp, err := videoClient.GetVideos(ctx, req)
 	if err != nil {

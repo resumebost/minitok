@@ -61,7 +61,7 @@ func (s *FavoriteServiceImpl) List(ctx context.Context, req *favorite.ListReques
 	userID := req.UserId
 
 	// 调用 service 获取喜欢的视频列表
-	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(userID)
+	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(req.Token,userID)
 	if err != nil {
 		// 处理错误并返回错误响应
 		return &favorite.ListResponse{

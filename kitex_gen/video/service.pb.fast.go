@@ -279,6 +279,11 @@ func (x *GetVideosRequest) FastRead(buf []byte, _type int8, number int32) (offse
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -293,6 +298,11 @@ ReadFieldError:
 }
 
 func (x *GetVideosRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *GetVideosRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	offset, err = fastpb.ReadList(buf, _type,
 		func(buf []byte, _type int8) (n int, err error) {
 			var v int64
@@ -551,14 +561,23 @@ func (x *GetVideosRequest) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
 func (x *GetVideosRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Token == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetToken())
+	return offset
+}
+
+func (x *GetVideosRequest) fastWriteField2(buf []byte) (offset int) {
 	if len(x.VideoIds) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetVideoIds()),
+	offset += fastpb.WriteListPacked(buf[offset:], 2, len(x.GetVideoIds()),
 		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
 			offset := 0
 			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetVideoIds()[numIdxOrVal])
@@ -798,14 +817,23 @@ func (x *GetVideosRequest) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
 func (x *GetVideosRequest) sizeField1() (n int) {
+	if x.Token == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.GetToken())
+	return n
+}
+
+func (x *GetVideosRequest) sizeField2() (n int) {
 	if len(x.VideoIds) == 0 {
 		return n
 	}
-	n += fastpb.SizeListPacked(1, len(x.GetVideoIds()),
+	n += fastpb.SizeListPacked(2, len(x.GetVideoIds()),
 		func(numTagOrKey, numIdxOrVal int32) int {
 			n := 0
 			n += fastpb.SizeInt64(numTagOrKey, x.GetVideoIds()[numIdxOrVal])
@@ -885,7 +913,8 @@ var fieldIDToName_PublishListResponse = map[int32]string{
 }
 
 var fieldIDToName_GetVideosRequest = map[int32]string{
-	1: "VideoIds",
+	1: "Token",
+	2: "VideoIds",
 }
 
 var fieldIDToName_GetVideosResponse = map[int32]string{

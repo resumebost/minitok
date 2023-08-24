@@ -18,13 +18,13 @@ func NewLikeVideoListService(ctx context.Context) *LikeVideoListService {
 }
 
 // GetUserLikedVideos retrieves videos that the user has liked.
-func (s *LikeVideoListService)GetLikedVideos(userID int64) ([]*video.Video, error) {
+func (s *LikeVideoListService)GetLikedVideos(token string,userID int64) ([]*video.Video, error) {
 	likedVideoIDs, err := dal.GetUserLikedVideoIDs(s.ctx , userID)
 	if err != nil {
 		return nil, err
 	}
 
-	videoMap, err := rpc.GetVideosInfo(s.ctx, likedVideoIDs)
+	videoMap, err := rpc.GetVideosInfo(s.ctx, token,likedVideoIDs)
 	if err != nil {
 		return nil, err
 	}
