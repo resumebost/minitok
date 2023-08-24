@@ -1,10 +1,12 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"minitok/internal/jwt"
 	"minitok/internal/unierr"
 	"net/http"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AuthMiddleware Gin middleware: 获取 ctx 中的 token 并检验合法性
@@ -16,6 +18,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 从 multiform 中取出 token string
 		if len(str) == 0 {
 			str = ctx.PostForm("token")
+		}
+
+		//Header取: key:Authorization , value: Bearer <token>
+		if len(str) == 0 {
+			str = ctx.GetHeader("Authorization")
+			if len(str) > 7 && strings.ToLower(str[0:6]) == "bearer" {
+				str = str[7:]
+			}
 		}
 
 		if len(str) == 0 {

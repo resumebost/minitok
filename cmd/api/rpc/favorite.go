@@ -44,22 +44,13 @@ func initFavoriteRPC() {
 	favoriteClient = c
 }
 
-
 func FavoriteAction(ctx context.Context, req *favorite.ActionRequest) (*favorite.ActionResponse, error) {
 	resp, err := favoriteClient.Action(ctx, req)
 
 	if err != nil {
 		return resp, err
 	}
-	if resp == nil {
-		resp = &favorite.ActionResponse{
-			StatusCode: unierr.InternalError.ErrCode,
-			StatusMsg:  "RPC response is nil",
-		}
-		return resp, nil
-	}
 
-	//业务超时
 	if resp.StatusCode != 0 {
 		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
 	}
@@ -71,15 +62,31 @@ func FavoriteList(ctx context.Context, req *favorite.ListRequest) (*favorite.Lis
 	if err != nil {
 		return resp, err
 	}
-	if resp == nil {
-		resp = &favorite.ListResponse{
-			StatusCode: unierr.InternalError.ErrCode,
-			StatusMsg:  "RPC response is nil",
-		}
-		return resp, nil
+
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func FavoriteJudge(ctx context.Context, req *favorite.JudgeRequest) (*favorite.JudgeResponse, error) {
+	resp, err := favoriteClient.Judge(ctx, req)
+	if err != nil {
+		return resp, err
 	}
 
-	//业务超时
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func FavoriteCount(ctx context.Context, req *favorite.CountRequest) (*favorite.CountResponse, error) {
+	resp, err := favoriteClient.Count(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
 	if resp.StatusCode != 0 {
 		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
 	}

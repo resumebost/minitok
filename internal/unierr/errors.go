@@ -17,3 +17,7 @@ var (
 	GetPublishListFiled = NewErrCore(20005, "发布视频获取失败")
 	VideoNotFound       = NewErrCore(20006, "未找到视频")
 )
+
+var(
+    FavoriteAction = NewErrCore(20007, "点赞或者取消点赞失败")
+)

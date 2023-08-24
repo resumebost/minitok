@@ -3,15 +3,22 @@ package handler
 import (
 	"fmt"
 	"minitok/cmd/api/rpc"
+	"minitok/internal/unierr"
 	"minitok/kitex_gen/favorite"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func FavoriteAction(c *gin.Context) {
 
+	//TODO 不合理啊，为什么还要token，ctx在rpc那边解析不了
+	token := c.GetHeader("Authorization")
+	if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
+		token = token[7:]
+	}
 	// Parse request data
 	var reqData struct {
 		VideoID    int64 `json:"video_id"`
@@ -24,19 +31,19 @@ func FavoriteAction(c *gin.Context) {
 	}
 
 	//RPC service
-	ctx := c.Request.Context()
 	req := &favorite.ActionRequest{
+		Token:      token,
 		VideoId:    reqData.VideoID,
 		ActionType: reqData.ActionType,
 	}
 
-	resp, err := rpc.FavoriteAction(ctx, req)
+	resp, err := rpc.FavoriteAction(c, req)
 	if err != nil {
-		// 在 RPC 调用出错时记录错误信息
+		//TODO 在 RPC 调用出错时记录错误信息
 		fmt.Printf("Error in RPC call: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code": resp.StatusCode,
-			"status_msg":  resp.StatusMsg,
+			"status_code": unierr.FavoriteAction.ErrCode,	//TODO 应该返回resp.StatusCode，但是有问题
+			"status_msg":  unierr.FavoriteAction.ErrMsg,
 			"error":       "Internal server error",
 		})
 		return
@@ -46,14 +53,14 @@ func FavoriteAction(c *gin.Context) {
 		"status_code": resp.StatusCode,
 		"status_msg":  resp.StatusMsg,
 	})
-
-	fmt.Printf("请求参数: %+v\n", reqData)
-	fmt.Printf("发起rpc请求: %+v\n", req)
-	fmt.Printf("rpc响应: %+v\n", resp)
 }
 
 func FavoriteList(c *gin.Context) {
-
+	//TODO 不合理啊，为什么还要token，ctx在rpc那边解析不了
+	token := c.GetHeader("Authorization")
+	if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
+		token = token[7:]
+	}
 	// Get UserID
 	userIDStr := c.Query("user_id")
 	userID, err := strconv.ParseInt(userIDStr, 10, 64)
@@ -65,18 +72,20 @@ func FavoriteList(c *gin.Context) {
 	}
 
 	// Call RPC service
-	ctx := c.Request.Context()
 	req := &favorite.ListRequest{
+		Token:  token,
 		UserId: userID,
 	}
 
-	resp, err := rpc.FavoriteList(ctx, req)
+	resp, err := rpc.FavoriteList(c, req)
 	if err != nil {
+		//TODO 日志
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code": resp.StatusCode,
-			"status_msg":  resp.StatusMsg,
+			"status_code":  unierr.GetVideoListFiled.ErrCode,//TODO 应该返回resp.code，但是有问题
+			"status_msg":   unierr.GetVideoListFiled.ErrMsg,
 			"error":       "Failed to fetch favorite list",
 		})
+		fmt.Println(resp)
 		return
 	}
 
@@ -86,4 +95,3 @@ func FavoriteList(c *gin.Context) {
 		"video_list":  resp.VideoList,
 	})
 }
-
