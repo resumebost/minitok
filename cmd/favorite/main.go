@@ -1,12 +1,6 @@
 package main
 
 import (
-	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/limit"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	"github.com/cloudwego/kitex/server"
-	etcd "github.com/kitex-contrib/registry-etcd"
-	opentracing "github.com/kitex-contrib/tracer-opentracing"
 	"minitok/cmd/favorite/dal"
 	"minitok/cmd/favorite/rpc"
 	"minitok/internal/constant"
@@ -15,6 +9,13 @@ import (
 	"minitok/internal/tracer"
 	favorite "minitok/kitex_gen/favorite/favoriteservice"
 	"net"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/cloudwego/kitex/pkg/limit"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/server"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	opentracing "github.com/kitex-contrib/tracer-opentracing"
 )
 
 var favoriteConstants *constant.ServiceInfo
@@ -29,7 +30,6 @@ func initAll() {
 	tracer.InitJaeger(favoriteConstants.Name)
 }
 
-// TODO: 增加其它配置
 func main() {
 	initAll()
 
