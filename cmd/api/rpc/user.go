@@ -1,13 +1,17 @@
 package rpc
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	opentracing "github.com/kitex-contrib/tracer-opentracing"
 	"minitok/internal/constant"
 	"minitok/internal/middleware"
+	"minitok/internal/unierr"
+	"minitok/kitex_gen/user"
 	"minitok/kitex_gen/user/userservice"
 	"time"
 )
@@ -38,4 +42,38 @@ func initUserRPC() {
 	}
 
 	userClient = c
+}
+
+func Register(ctx context.Context, req *user.RegisterRequest) (*user.RegisterResponse, error) {
+	resp, err := userClient.Register(ctx, req, callopt.WithRPCTimeout(180*time.Second))
+	if err != nil {
+		return nil, err
+	}
+	println(resp.StatusCode)
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func Login(ctx context.Context, req *user.LoginRequest) (*user.LoginResponse, error) {
+	resp, err := userClient.Login(ctx, req, callopt.WithRPCTimeout(180*time.Second))
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func Info(ctx context.Context, req *user.InfoRequest) (*user.InfoResponse, error) {
+	resp, err := userClient.Info(ctx, req, callopt.WithRPCTimeout(180*time.Second))
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
 }
