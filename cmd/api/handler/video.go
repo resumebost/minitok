@@ -126,5 +126,6 @@ func VideoPublishList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": resp.StatusCode,
 		"status_msg":  resp.StatusMsg,
+		"video_list":  resp.VideoList,
 	})
 }

@@ -53,16 +53,34 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 			commentCount.StatusCode,
 			commentCount.StatusMsg)
 	}
+	//获取用户是否点赞过视频
+	isFavorite, err := rpc.JudgeFavorite(s.ctx, &favorite.JudgeRequest{
+		VideoIdList: videoIds,
+		Token:       req.Token})
+	if err != nil {
+		return nil, unierr.NewErrCore(
+			isFavorite.StatusCode,
+			isFavorite.StatusMsg)
+	}
 
 	for i, v := range videos {
+		author, err := rpc.GetUserInfo(s.ctx, &user.InfoRequest{
+			UserId: v.AuthorID,
+			Token:  req.Token})
+		if err != nil {
+			return nil, unierr.NewErrCore(
+				author.StatusCode,
+				author.StatusMsg)
+		}
+
 		res[i] = &video.Video{
 			Id:            int64(v.ID),
-			Author:        &user.User{}, //空
+			Author:        author.User,
 			PlayUrl:       v.PlayURL,
 			CoverUrl:      v.CoverURL,
 			FavoriteCount: favoriteCount.FavoriteCountList[i],
 			CommentCount:  commentCount.CommentCountList[i],
-			IsFavorite:    false, //默认未关注
+			IsFavorite:    isFavorite.Is_LikeList[i],
 			Title:         v.Title,
 		}
 	}
