@@ -66,12 +66,13 @@ func JudgeLikes(ctx context.Context, userID int64, videoIDs []int64) ([]bool, er
 	return results, nil
 }
 
-//列表总数
+// 列表总数
 // GetFavoriteCounts retrieves the favorite counts for the given videos.
 func GetFavoriteCounts(ctx context.Context, videoIDs []int64) ([]int64, error) {
-	var counts []int64
-
 	db := GormDB.WithContext(ctx)
+
+	// 用 map 来记录视频ID和对应的点赞数
+	videoIDToCount := make(map[int64]int64)
 
 	rows, err := db.Model(&Favorite{}).
 		Select("video_id, COUNT(*) as favorite_count").
@@ -84,12 +85,22 @@ func GetFavoriteCounts(ctx context.Context, videoIDs []int64) ([]int64, error) {
 	}
 	defer rows.Close()
 
-	//将videoID遍历并赋值到对应的count
+	// 将videoID遍历并更新对应的map条目
 	for rows.Next() {
 		var videoID, count int64
 		if err := rows.Scan(&videoID, &count); err == nil {
-			counts = append(counts, count)
+			videoIDToCount[videoID] = count
 		}
+	}
+
+	// 创建结果列表，如果视频ID在map中不存在，则返回0
+	var counts []int64
+	for _, videoID := range videoIDs {
+		count, found := videoIDToCount[videoID]
+		if !found {
+			count = 0
+		}
+		counts = append(counts, count)
 	}
 
 	return counts, nil

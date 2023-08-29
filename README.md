@@ -67,8 +67,9 @@ deltaprojects/etcdkeeper
 
 ### 注意事项
 
-- 经过 JWT 中间件验证之后, ctx 会以键值对的形式保存用户的 username 和 id, key 就是 `username` 和 `id`
+- 如果需要获取发起请求的用户的 id 和 username, 需要手动调用 ParseToken 获取 Claims 对象
 - `internal/constant/constant.go` 内的 InitConstant 函数必须先于任何配置调用
+- Redis 容器没有部署, 如果有需要请在群里 at 群主
 
 ### 错误处理
 

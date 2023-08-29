@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"minitok/cmd/favorite/service"
+	"minitok/internal/jwt"
 	"minitok/internal/unierr"
 	favorite "minitok/kitex_gen/favorite"
 )
@@ -15,10 +16,15 @@ type FavoriteServiceImpl struct{}
 // Action implements the FavoriteServiceImpl interface.
 func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRequest) (resp *favorite.ActionResponse, err error) {
 
+	// userID := ctx.Value("id").(int64) // 用户id
+	claims, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		return
+	}
+	userID := claims.ID
+
+	//TODO 有待优化
 	resp = new(favorite.ActionResponse)
-
-	userID := ctx.Value("id").(int64) // 用户id
-
 	if req.ActionType == 1 { //  1 represents "like" action
 		err = service.NewLikeVideoService(ctx).LikeVideo(userID, req.VideoId)
 	} else if req.ActionType == 2 { //  2 represents "unlike" action
@@ -34,8 +40,8 @@ func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRe
 
 	if err != nil {
 		resp = &favorite.ActionResponse{
-			StatusCode: unierr.InternalError.ErrCode,
-			StatusMsg:  unierr.InternalError.ErrMsg,
+			StatusCode: unierr.FavoriteAction.ErrCode,
+			StatusMsg:  unierr.FavoriteAction.ErrMsg,
 		}
 		return resp, err
 	}
@@ -55,12 +61,12 @@ func (s *FavoriteServiceImpl) List(ctx context.Context, req *favorite.ListReques
 	userID := req.UserId
 
 	// 调用 service 获取喜欢的视频列表
-	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(userID)
+	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(req.Token,userID)
 	if err != nil {
 		// 处理错误并返回错误响应
 		return &favorite.ListResponse{
-			StatusCode: unierr.InternalError.ErrCode,
-			StatusMsg:  unierr.InternalError.ErrMsg,
+			StatusCode: unierr.GetVideoListFiled.ErrCode,
+			StatusMsg:  unierr.GetVideoListFiled.ErrMsg,
 		}, err
 	}
 
@@ -75,8 +81,13 @@ func (s *FavoriteServiceImpl) List(ctx context.Context, req *favorite.ListReques
 // 点赞与否
 // Judge implements the FavoriteServiceImpl interface.
 func (s *FavoriteServiceImpl) Judge(ctx context.Context, req *favorite.JudgeRequest) (resp *favorite.JudgeResponse, err error) {
-	// 获取用户ID，JWT中间件会将用户ID保存在上下文的键值对中
-	userID := ctx.Value("id").(int64)
+	// userID := ctx.Value("id").(int64) // 用户id
+	claims, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		return
+	}
+	userID := claims.ID
+
 	videoIDs := req.VideoIdList
 
 	isLikedList, err := service.NewJudgeLikedVideosService(ctx).JudgeLikedVideos(userID, videoIDs)

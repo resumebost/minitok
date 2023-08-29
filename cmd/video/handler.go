@@ -16,11 +16,17 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 	videoList, nextTime, err := service.NewFeedService(ctx).Feed(req)
 	if err != nil {
-		resp = &video.FeedResponse{StatusCode: unierr.GetFeedFiled.ErrCode, StatusMsg: unierr.GetFeedFiled.ErrMsg}
+		resp = &video.FeedResponse{
+			StatusCode: unierr.GetFeedFiled.ErrCode,
+			StatusMsg:  unierr.GetFeedFiled.ErrMsg}
 		return resp, err
 	}
 
-	resp = &video.FeedResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, VideoList: videoList, NextTime: nextTime}
+	resp = &video.FeedResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg,
+		VideoList:  videoList,
+		NextTime:   nextTime}
 	return resp, nil
 }
 
@@ -31,12 +37,16 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 
 	err = service.NewUploadVideoService(ctx).PublishVideo(req)
 	if err != nil {
-		resp = &video.PublishActionResponse{StatusCode: unierr.VideoPublishFiled.ErrCode, StatusMsg: unierr.VideoPublishFiled.ErrMsg}
+		resp = &video.PublishActionResponse{
+			StatusCode: unierr.VideoPublishFiled.ErrCode,
+			StatusMsg:  unierr.VideoPublishFiled.ErrMsg}
 		//fmt.Println("videp handler: " + err.Error())
 		return resp, err
 	}
 
-	resp = &video.PublishActionResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg}
+	resp = &video.PublishActionResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg}
 	//fmt.Println("video服务无问题")
 	return resp, nil
 }
@@ -47,11 +57,16 @@ func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishLi
 
 	videoList, err := service.NewPublishListService(ctx).PublishList(req)
 	if err != nil {
-		resp = &video.PublishListResponse{StatusCode: unierr.GetVideoListFiled.ErrCode, StatusMsg: unierr.GetVideoListFiled.ErrMsg}
+		resp = &video.PublishListResponse{
+			StatusCode: unierr.GetVideoListFiled.ErrCode,
+			StatusMsg:  unierr.GetVideoListFiled.ErrMsg}
 		return resp, err
 	}
 
-	resp = &video.PublishListResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, VideoList: videoList}
+	resp = &video.PublishListResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg,
+		VideoList:  videoList}
 	return resp, nil
 }
 
@@ -61,10 +76,15 @@ func (s *VideoServiceImpl) GetVideos(ctx context.Context, req *video.GetVideosRe
 
 	videoList, err := service.NewVideoListService(ctx).GetVideos(req)
 	if err != nil {
-		resp = &video.GetVideosResponse{StatusCode: unierr.GetVideoListFiled.ErrCode, StatusMsg: unierr.GetVideoListFiled.ErrMsg}
+		resp = &video.GetVideosResponse{
+			StatusCode: unierr.GetVideoListFiled.ErrCode,
+			StatusMsg:  unierr.GetVideoListFiled.ErrMsg}
 		return resp, err
 	}
 
-	resp = &video.GetVideosResponse{StatusCode: unierr.SuccessCode.ErrCode, StatusMsg: unierr.SuccessCode.ErrMsg, Videos: videoList}
+	resp = &video.GetVideosResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg,
+		Videos:     videoList}
 	return resp, nil
 }

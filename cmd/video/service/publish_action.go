@@ -106,7 +106,7 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 	wg2.Wait()
 
 	//存储到数据库
-	//id := s.ctx.Value("id")
+	//id := s.ctx.Value("id") //取不到，值从api那边的RPC调用到video这边就消失了似乎
 	claims, err := jwt.ParseToken(req.Token)
 	id := claims.ID
 
