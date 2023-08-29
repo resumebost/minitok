@@ -52,13 +52,13 @@ type DatasourceInfo struct {
 }
 
 func (d *DatasourceInfo) DSNString() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
 		d.Username,
 		d.Password,
 		d.Host,
 		d.Port,
 		d.Database,
-		d.Settings)
+	)
 }
 
 type Constant struct {
