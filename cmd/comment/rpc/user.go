@@ -10,22 +10,22 @@ import (
 	"minitok/internal/constant"
 	"minitok/internal/middleware"
 	"minitok/internal/unierr"
-	"minitok/kitex_gen/comment"
-	"minitok/kitex_gen/comment/commentservice"
+	"minitok/kitex_gen/user"
+	"minitok/kitex_gen/user/userservice"
 	"time"
 )
 
-var commentClient commentservice.Client
-var commentConstants = &constant.AllConstants.CommentService
+var userClient userservice.Client
+var userConstants = &constant.AllConstants.UserService
 
-func initCommentRPC() {
+func initUserRPC() {
 	r, err := etcd.NewEtcdResolver([]string{constant.ETCDAddress})
 	if err != nil {
 		klog.Fatalf("ETCD resolver initialization failed: %v", err)
 	}
 
-	c, err := commentservice.NewClient(
-		commentConstants.Name,
+	c, err := userservice.NewClient(
+		userConstants.Name,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),
@@ -40,22 +40,11 @@ func initCommentRPC() {
 		klog.Fatalf("Kitex client initialization failed: %v", err)
 	}
 
-	commentClient = c
+	userClient = c
 }
 
-func CommentAction(ctx context.Context, req *comment.ActionRequest) (*comment.ActionResponse, error) {
-	resp, err := commentClient.Action(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != 0 {
-		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
-	}
-	return resp, nil
-}
-
-func CommentList(ctx context.Context, req *comment.ListRequest) (*comment.ListResponse, error) {
-	resp, err := commentClient.List(ctx, req)
+func GetUserInfo(ctx context.Context, req *user.InfoRequest) (*user.InfoResponse, error) {
+	resp, err := userClient.Info(ctx, req)
 	if err != nil {
 		return nil, err
 	}
