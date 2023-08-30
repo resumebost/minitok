@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"minitok/cmd/comment/dal"
 	"minitok/kitex_gen/comment"
 )
 
@@ -16,6 +17,9 @@ func NewCommentCountService(ctx context.Context) *CommentCountService {
 }
 
 func (s *CommentCountService) CommentCount(req *comment.CountRequest) ([]int64, error) {
-
-	return nil, nil
+	commentCounts, err := dal.CountComments(req.VideoIdList, s.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return commentCounts, nil
 }

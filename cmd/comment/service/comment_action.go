@@ -2,7 +2,11 @@ package service
 
 import (
 	"context"
+	"minitok/cmd/comment/dal"
+	"minitok/cmd/video/rpc"
+	"minitok/internal/jwt"
 	"minitok/kitex_gen/comment"
+	"minitok/kitex_gen/user"
 )
 
 type CommentActionService struct {
@@ -16,11 +20,43 @@ func NewCommentActionService(ctx context.Context) *CommentActionService {
 }
 
 func (s *CommentActionService) PostComment(req *comment.ActionRequest) (*comment.Comment, error) {
+	videoId := req.VideoId
+	commentContent := req.CommentText
+	claims, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		return nil, err
+	}
+	userId := claims.ID
 
-	return nil, nil
+	createComment, err := dal.CreateComment(&dal.Comment{
+		UserID:  userId,
+		VideoID: videoId,
+		Content: commentContent,
+	}, s.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	author, err := rpc.GetUserInfo(s.ctx, &user.InfoRequest{
+		UserId: createComment.UserID,
+		Token:  req.Token,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	res := &comment.Comment{
+		Id:         int64(createComment.ID),
+		User:       author.User,
+		Content:    createComment.Content,
+		CreateDate: createComment.CreatedAt.Format("01-02"), //MM-dd格式
+	}
+
+	return res, nil
 }
 
 func (s *CommentActionService) DeleteComment(req *comment.ActionRequest) error {
-
-	return nil
+	commentId := req.CommentId
+	err := dal.DeleteComment(commentId, s.ctx)
+	return err
 }
