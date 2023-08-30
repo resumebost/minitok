@@ -11,8 +11,8 @@ var GormDB *gorm.DB
 type Comment struct {
 	gorm.Model
 
-	UserID  string
-	VideoID string
+	UserID  int64
+	VideoID int64
 	Content string
 }
 

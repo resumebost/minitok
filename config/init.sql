@@ -30,8 +30,8 @@ CREATE TABLE `comments` (
   `created_at` datetime(3) DEFAULT NULL,
   `updated_at` datetime(3) DEFAULT NULL,
   `deleted_at` datetime(3) DEFAULT NULL,
-  `user_id` longtext DEFAULT NULL,
-  `video_id` longtext DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `video_id` bigint(20) unsigned DEFAULT NULL,
   `content` longtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_comments_deleted_at` (`deleted_at`)

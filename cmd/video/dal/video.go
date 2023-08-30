@@ -51,7 +51,7 @@ func GetVideosByAuthorDescByTime(authorID int64, ctx context.Context) ([]*Video,
 func GetVideosDescByTimeLimit(latestTime int64, videoNum int, ctx context.Context) ([]*Video, error) {
 	var videos []*Video
 
-	videoTime := time.UnixMilli(latestTime).Format("2006-01-02 15:04:05")
+	videoTime := time.Unix(latestTime, 0).Format("2006-01-02 15:04:05")
 	result := GormDB.WithContext(ctx).
 		Where("created_at < ?", videoTime).
 		Order("created_at desc").
