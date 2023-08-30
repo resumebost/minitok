@@ -30,5 +30,5 @@ var (
 	TokenNotExist                         = NewErrCore(30008, "Token不存在")
 	UserIdInvalid                         = NewErrCore(30009, "user_id不合法")
 
-	FavoriteAction = NewErrCore(40001, "点赞或者取消点赞失败")
+	FavoriteActionError = NewErrCore(40001, "点赞或者取消点赞失败")
 )

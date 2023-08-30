@@ -41,8 +41,8 @@ func FavoriteAction(c *gin.Context) {
 		//在 RPC 调用出错时记录错误信息
 		fmt.Printf("Error in RPC call: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code": unierr.FavoriteAction.ErrCode,
-			"status_msg":  unierr.FavoriteAction.ErrMsg,
+			"status_code": unierr.FavoriteActionError.ErrCode,
+			"status_msg":  unierr.FavoriteActionError.ErrMsg,
 			"error":       "Internal server error",
 		})
 		return

@@ -40,8 +40,8 @@ func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRe
 
 	if err != nil {
 		resp = &favorite.ActionResponse{
-			StatusCode: unierr.FavoriteAction.ErrCode,
-			StatusMsg:  unierr.FavoriteAction.ErrMsg,
+			StatusCode: unierr.FavoriteActionError.ErrCode,
+			StatusMsg:  unierr.FavoriteActionError.ErrMsg,
 		}
 		return resp, err
 	}
