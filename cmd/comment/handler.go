@@ -4,7 +4,7 @@ import (
 	"context"
 	"minitok/cmd/comment/service"
 	"minitok/internal/unierr"
-	comment "minitok/kitex_gen/comment"
+	"minitok/kitex_gen/comment"
 )
 
 // CommentServiceImpl implements the last service interface defined in the IDL.

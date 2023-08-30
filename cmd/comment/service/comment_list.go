@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"minitok/cmd/comment/dal"
-	"minitok/cmd/video/rpc"
+	"minitok/cmd/comment/rpc"
 	"minitok/internal/unierr"
 	"minitok/kitex_gen/comment"
 	"minitok/kitex_gen/user"
