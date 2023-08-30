@@ -27,7 +27,7 @@ func VideoFeed(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status_code": unierr.IllegalParams.ErrCode,
-				"status_msg":  unierr.IllegalParams.ErrCode,
+				"status_msg":  unierr.IllegalParams.ErrMsg,
 			})
 			return
 		}
@@ -59,7 +59,7 @@ func VideoPublishAction(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status_code": unierr.IllegalParams.ErrCode,
-			"status_msg":  unierr.IllegalParams.ErrCode,
+			"status_msg":  unierr.IllegalParams.ErrMsg,
 		})
 		return
 	}
@@ -68,7 +68,7 @@ func VideoPublishAction(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status_code": unierr.VideoConvertError.ErrCode,
-			"status_msg":  unierr.VideoConvertError.ErrCode,
+			"status_msg":  unierr.VideoConvertError.ErrMsg,
 		})
 		return
 	}
@@ -76,7 +76,7 @@ func VideoPublishAction(c *gin.Context) {
 	if len(req.Title) == 0 || len(req.Data) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status_code": unierr.IllegalParams.ErrCode,
-			"status_msg":  unierr.IllegalParams.ErrCode,
+			"status_msg":  unierr.IllegalParams.ErrMsg,
 		})
 		return
 	}

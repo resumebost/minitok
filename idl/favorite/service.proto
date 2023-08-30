@@ -47,9 +47,20 @@ message CountResponse{
   repeated int64 favoriteCount_list = 3;
 }
 
+message CountByUserRequest{
+  int64 user_id = 1;
+}
+
+message CountByUserResponse{
+  int32 status_code = 1;
+  string status_msg = 2;
+  int64 favorite_count = 3;
+}
+
 service FavoriteService {
   rpc Action(ActionRequest) returns (ActionResponse);
   rpc List(ListRequest) returns (ListResponse);
   rpc Judge(JudgeRequest) returns (JudgeResponse);
   rpc Count(CountRequest) returns(CountResponse);
+  rpc CountByUser(CountByUserRequest) returns(CountByUserResponse);
 }
