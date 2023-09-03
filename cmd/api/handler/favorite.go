@@ -17,23 +17,17 @@ func FavoriteAction(c *gin.Context) {
 	// if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
 	// 	token = token[7:]
 	// }
-	// Parse request data
-	var reqData struct {
-		Token        string `json:"token"`
-		VideoID    int64 `json:"video_id"`
-		ActionType int32 `json:"action_type"`
-	}
-	if err := c.BindJSON(&reqData); err != nil {
-		c.JSON(
-			http.StatusBadRequest, gin.H{"error": "Invalid request data"})
-		return
-	}
+
+	token :=  c.Query("token")
+	videoid, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	parsedValue, _ := strconv.ParseInt(c.Query("action_type"), 10, 64)
+	actiontype := int32(parsedValue)
 
 	//RPC service
 	req := &favorite.ActionRequest{
-		Token:      reqData.Token,
-		VideoId:    reqData.VideoID,
-		ActionType: reqData.ActionType,
+		Token:      token,
+		VideoId:    videoid,
+		ActionType: actiontype,
 	}
 
 	resp, err := rpc.FavoriteAction(c, req)

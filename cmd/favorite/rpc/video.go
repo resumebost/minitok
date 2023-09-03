@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 	"minitok/internal/constant"
 	"minitok/internal/middleware"
 	"minitok/internal/unierr"
@@ -52,12 +51,10 @@ func GetVideosInfo(ctx context.Context,token string, videoIDs []int64) (map[int6
 		Token: token,
 		VideoIds: videoIDs,
 	}
-	fmt.Println("#############rpc的token：",req.Token)
 
 	resp, err := videoClient.GetVideos(ctx, req)
 	if err != nil {
-		//TODO 
-		fmt.Printf("Error in RPC call: %v\n", err)
+		// fmt.Printf("Error in RPC call: %v\n", err)
 		return nil, err
 	}
 

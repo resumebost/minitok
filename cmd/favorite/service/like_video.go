@@ -3,33 +3,27 @@ package service
 import (
 	"context"
 	"minitok/cmd/favorite/dal"
-	"minitok/cmd/favorite/pack"
-	"minitok/cmd/favorite/rpc"
-	"minitok/kitex_gen/video"
 )
 
-type LikeVideoListService struct {
+type LikeVideoService struct {
 	ctx context.Context
 }
 
-//初始化
-func NewLikeVideoListService(ctx context.Context) *LikeVideoListService {
-	return &LikeVideoListService{ctx: ctx}
+// 初始化
+func NewLikeVideoService(ctx context.Context) *LikeVideoService {
+	return &LikeVideoService{ctx: ctx}
 }
 
-// GetUserLikedVideos retrieves videos that the user has liked.
-func (s *LikeVideoListService)GetLikedVideos(token string,userID int64) ([]*video.Video, error) {
-	likedVideoIDs, err := dal.GetUserLikedVideoIDs(s.ctx , userID)
-	if err != nil {
-		return nil, err
+// 插入数据：点赞
+func (s *LikeVideoService) LikeVideo(userID int64, videoID int64) error {
+	//将数据封装一下好一点，dal那边使用一次插入多条，但怎么用都ok
+	favoriteModel := &dal.Favorite{
+		UserID:  userID,
+		VideoID: videoID,
 	}
+	return dal.CreateFavorite(s.ctx, []*dal.Favorite{favoriteModel})
+}
 
-	videoMap, err := rpc.GetVideosInfo(s.ctx, token,likedVideoIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	//打个包
-	likedVideos := pack.ConvertToFavoriteVideos(videoMap, likedVideoIDs)
-	return likedVideos, nil
+func (s *LikeVideoService) UnlikeVideo(userID int64, videoID int64) error {
+	return dal.DeleteFavorite(s.ctx, userID, videoID)
 }
