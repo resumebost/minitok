@@ -90,7 +90,20 @@ func (s *VideoServiceImpl) GetVideos(ctx context.Context, req *video.GetVideosRe
 }
 
 // PublishListIds implements the VideoServiceImpl interface.
-func (s *VideoServiceImpl) PublishListIds(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
-	// TODO: Your code here...
-	return
+func (s *VideoServiceImpl) PublishListIds(ctx context.Context, req *video.PublishListIdsRequest) (resp *video.PublishListIdsResponse, err error) {
+	resp = nil
+
+	videoIdList, err := service.NewPublishListService(ctx).PublishListIds(req)
+	if err != nil {
+		resp = &video.PublishListIdsResponse{
+			StatusCode: unierr.InternalError.ErrCode,
+			StatusMsg:  unierr.InternalError.ErrMsg}
+		return resp, err
+	}
+
+	resp = &video.PublishListIdsResponse{
+		StatusCode:  unierr.SuccessCode.ErrCode,
+		StatusMsg:   unierr.SuccessCode.ErrMsg,
+		VideoIdList: videoIdList}
+	return resp, nil
 }

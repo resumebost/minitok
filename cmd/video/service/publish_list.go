@@ -84,3 +84,14 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	}
 	return res, nil
 }
+
+func (s *PublishListService) PublishListIds(req *video.PublishListIdsRequest) ([]int64, error) {
+	authorId := req.UserId
+
+	videoIdList, err := dal.GetVideoIdsByAuthor(authorId, s.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return videoIdList, nil
+}

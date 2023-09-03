@@ -658,7 +658,7 @@ func publishListIdsHandler(ctx context.Context, handler interface{}, arg, result
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(video.PublishActionRequest)
+		req := new(video.PublishListIdsRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -688,12 +688,12 @@ func newPublishListIdsResult() interface{} {
 }
 
 type PublishListIdsArgs struct {
-	Req *video.PublishActionRequest
+	Req *video.PublishListIdsRequest
 }
 
 func (p *PublishListIdsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(video.PublishActionRequest)
+		p.Req = new(video.PublishListIdsRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -720,7 +720,7 @@ func (p *PublishListIdsArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *PublishListIdsArgs) Unmarshal(in []byte) error {
-	msg := new(video.PublishActionRequest)
+	msg := new(video.PublishListIdsRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -728,9 +728,9 @@ func (p *PublishListIdsArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var PublishListIdsArgs_Req_DEFAULT *video.PublishActionRequest
+var PublishListIdsArgs_Req_DEFAULT *video.PublishListIdsRequest
 
-func (p *PublishListIdsArgs) GetReq() *video.PublishActionRequest {
+func (p *PublishListIdsArgs) GetReq() *video.PublishListIdsRequest {
 	if !p.IsSetReq() {
 		return PublishListIdsArgs_Req_DEFAULT
 	}
@@ -746,14 +746,14 @@ func (p *PublishListIdsArgs) GetFirstArgument() interface{} {
 }
 
 type PublishListIdsResult struct {
-	Success *video.PublishActionResponse
+	Success *video.PublishListIdsResponse
 }
 
-var PublishListIdsResult_Success_DEFAULT *video.PublishActionResponse
+var PublishListIdsResult_Success_DEFAULT *video.PublishListIdsResponse
 
 func (p *PublishListIdsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(video.PublishActionResponse)
+		p.Success = new(video.PublishListIdsResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -780,7 +780,7 @@ func (p *PublishListIdsResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *PublishListIdsResult) Unmarshal(in []byte) error {
-	msg := new(video.PublishActionResponse)
+	msg := new(video.PublishListIdsResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -788,7 +788,7 @@ func (p *PublishListIdsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *PublishListIdsResult) GetSuccess() *video.PublishActionResponse {
+func (p *PublishListIdsResult) GetSuccess() *video.PublishListIdsResponse {
 	if !p.IsSetSuccess() {
 		return PublishListIdsResult_Success_DEFAULT
 	}
@@ -796,7 +796,7 @@ func (p *PublishListIdsResult) GetSuccess() *video.PublishActionResponse {
 }
 
 func (p *PublishListIdsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*video.PublishActionResponse)
+	p.Success = x.(*video.PublishListIdsResponse)
 }
 
 func (p *PublishListIdsResult) IsSetSuccess() bool {
@@ -857,7 +857,7 @@ func (p *kClient) GetVideos(ctx context.Context, Req *video.GetVideosRequest) (r
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) PublishListIds(ctx context.Context, Req *video.PublishActionRequest) (r *video.PublishActionResponse, err error) {
+func (p *kClient) PublishListIds(ctx context.Context, Req *video.PublishListIdsRequest) (r *video.PublishListIdsResponse, err error) {
 	var _args PublishListIdsArgs
 	_args.Req = Req
 	var _result PublishListIdsResult

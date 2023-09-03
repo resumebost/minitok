@@ -64,5 +64,5 @@ service VideoService {
   rpc PublishAction(PublishActionRequest) returns (PublishActionResponse);
   rpc PublishList(PublishListRequest) returns (PublishListResponse);
   rpc GetVideos(GetVideosRequest) returns (GetVideosResponse);
-  rpc PublishListIds(PublishActionRequest) returns (PublishActionResponse);
+  rpc PublishListIds(PublishListIdsRequest) returns (PublishListIdsResponse);
 }

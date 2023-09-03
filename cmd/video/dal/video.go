@@ -48,6 +48,15 @@ func GetVideosByAuthorDescByTime(authorID int64, ctx context.Context) ([]*Video,
 	return videos, result.Error
 }
 
+func GetVideoIdsByAuthor(authorID int64, ctx context.Context) ([]int64, error) {
+	var videoIds []int64
+	result := GormDB.WithContext(ctx).
+		Where("author_id = ?", authorID).
+		Pluck("id", videoIds)
+
+	return videoIds, result.Error
+}
+
 func GetVideosDescByTimeLimit(latestTime int64, videoNum int, ctx context.Context) ([]*Video, error) {
 	var videos []*Video
 
