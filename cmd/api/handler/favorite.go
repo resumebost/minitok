@@ -7,19 +7,19 @@ import (
 	"minitok/kitex_gen/favorite"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func FavoriteAction(c *gin.Context) {
 
-	token := c.GetHeader("Authorization")
-	if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
-		token = token[7:]
-	}
+	// token := c.GetHeader("Authorization")
+	// if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
+	// 	token = token[7:]
+	// }
 	// Parse request data
 	var reqData struct {
+		Token        string `json:"token"`
 		VideoID    int64 `json:"video_id"`
 		ActionType int32 `json:"action_type"`
 	}
@@ -31,7 +31,7 @@ func FavoriteAction(c *gin.Context) {
 
 	//RPC service
 	req := &favorite.ActionRequest{
-		Token:      token,
+		Token:      reqData.Token,
 		VideoId:    reqData.VideoID,
 		ActionType: reqData.ActionType,
 	}
@@ -55,12 +55,13 @@ func FavoriteAction(c *gin.Context) {
 }
 
 func FavoriteList(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
-		token = token[7:]
-	}
+	// token := c.GetHeader("Authorization")
+	// if len(token) > 7 && strings.ToLower(token[0:6]) == "bearer" {
+	// 	token = token[7:]
+	// }
 	// Get UserID
 	userIDStr := c.Query("user_id")
+	token :=  c.Query("token")
 	userID, err := strconv.ParseInt(userIDStr, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
