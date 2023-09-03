@@ -15,6 +15,7 @@ type Client interface {
 	List(ctx context.Context, Req *favorite.ListRequest, callOptions ...callopt.Option) (r *favorite.ListResponse, err error)
 	Judge(ctx context.Context, Req *favorite.JudgeRequest, callOptions ...callopt.Option) (r *favorite.JudgeResponse, err error)
 	Count(ctx context.Context, Req *favorite.CountRequest, callOptions ...callopt.Option) (r *favorite.CountResponse, err error)
+	CountByUser(ctx context.Context, Req *favorite.CountByUserRequest, callOptions ...callopt.Option) (r *favorite.CountByUserResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +65,9 @@ func (p *kFavoriteServiceClient) Judge(ctx context.Context, Req *favorite.JudgeR
 func (p *kFavoriteServiceClient) Count(ctx context.Context, Req *favorite.CountRequest, callOptions ...callopt.Option) (r *favorite.CountResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Count(ctx, Req)
+}
+
+func (p *kFavoriteServiceClient) CountByUser(ctx context.Context, Req *favorite.CountByUserRequest, callOptions ...callopt.Option) (r *favorite.CountByUserResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CountByUser(ctx, Req)
 }

@@ -23,7 +23,6 @@ func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRe
 	}
 	userID := claims.ID
 
-	//TODO 有待优化
 	resp = new(favorite.ActionResponse)
 	if req.ActionType == 1 { //  1 represents "like" action
 		err = service.NewLikeVideoService(ctx).LikeVideo(userID, req.VideoId)
@@ -61,12 +60,12 @@ func (s *FavoriteServiceImpl) List(ctx context.Context, req *favorite.ListReques
 	userID := req.UserId
 
 	// 调用 service 获取喜欢的视频列表
-	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(req.Token,userID)
+	likedVideos, err := service.NewLikeVideoListService(ctx).GetLikedVideos(req.Token, userID)
 	if err != nil {
 		// 处理错误并返回错误响应
 		return &favorite.ListResponse{
-			StatusCode: unierr.GetVideoListFiled.ErrCode,
-			StatusMsg:  unierr.GetVideoListFiled.ErrMsg,
+			StatusCode: unierr.GetFavoriteVideoListFiled.ErrCode,
+			StatusMsg:  unierr.GetFavoriteVideoListFiled.ErrMsg,
 		}, err
 	}
 
@@ -93,8 +92,8 @@ func (s *FavoriteServiceImpl) Judge(ctx context.Context, req *favorite.JudgeRequ
 	isLikedList, err := service.NewJudgeLikedVideosService(ctx).JudgeLikedVideos(userID, videoIDs)
 	if err != nil {
 		return &favorite.JudgeResponse{
-			StatusCode:  unierr.InternalError.ErrCode,
-			StatusMsg:   unierr.InternalError.ErrMsg,
+			StatusCode:  unierr.GetFavoriteJudgeFiled.ErrCode,
+			StatusMsg:   unierr.GetFavoriteJudgeFiled.ErrMsg,
 			Is_LikeList: nil, // Handle error response
 		}, err
 	}
@@ -115,8 +114,8 @@ func (s *FavoriteServiceImpl) Count(ctx context.Context, req *favorite.CountRequ
 	favoriteCounts, err := service.NewJudgeLikedVideosService(ctx).GetVideoFavoriteCounts(videoIDs)
 	if err != nil {
 		return &favorite.CountResponse{
-			StatusCode:        unierr.InternalError.ErrCode,
-			StatusMsg:         unierr.InternalError.ErrMsg,
+			StatusCode:        unierr.GetFavoriteVideoCountFiled.ErrCode,
+			StatusMsg:         unierr.GetFavoriteVideoCountFiled.ErrMsg,
 			FavoriteCountList: nil, // Handle error response
 		}, err
 	}
@@ -125,5 +124,25 @@ func (s *FavoriteServiceImpl) Count(ctx context.Context, req *favorite.CountRequ
 		StatusCode:        unierr.SuccessCode.ErrCode,
 		StatusMsg:         "Action successful",
 		FavoriteCountList: favoriteCounts,
+	}, nil
+}
+
+// CountByUser implements the FavoriteServiceImpl interface.
+func (s *FavoriteServiceImpl) CountByUser(ctx context.Context, req *favorite.CountByUserRequest) (*favorite.CountByUserResponse, error) {
+	userID := req.UserId
+
+	favoriteCount, err := service.NewCountByUserService(ctx).CountByUser(userID)
+	if err != nil {
+		return &favorite.CountByUserResponse{
+			StatusCode: unierr.GetUserFavoriteVideoCountFiled.ErrCode,
+			StatusMsg:  unierr.GetUserFavoriteVideoCountFiled.ErrMsg,
+			FavoriteCount: 0,
+		}, err
+	}
+
+	return &favorite.CountByUserResponse{
+		StatusCode:    unierr.SuccessCode.ErrCode,
+		StatusMsg:     "Action successful",
+		FavoriteCount: favoriteCount,//视频收藏的总数
 	}, nil
 }

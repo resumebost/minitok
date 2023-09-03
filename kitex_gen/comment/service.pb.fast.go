@@ -208,7 +208,7 @@ func (x *ListResponse) fastReadField3(buf []byte, _type int8) (offset int, err e
 	if err != nil {
 		return offset, err
 	}
-	x.CommentList = &v
+	x.CommentList = append(x.CommentList, &v)
 	return offset, nil
 }
 
@@ -441,7 +441,9 @@ func (x *ListResponse) fastWriteField3(buf []byte) (offset int) {
 	if x.CommentList == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 3, x.GetCommentList())
+	for i := range x.GetCommentList() {
+		offset += fastpb.WriteMessage(buf[offset:], 3, x.GetCommentList()[i])
+	}
 	return offset
 }
 
@@ -646,7 +648,9 @@ func (x *ListResponse) sizeField3() (n int) {
 	if x.CommentList == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(3, x.GetCommentList())
+	for i := range x.GetCommentList() {
+		n += fastpb.SizeMessage(3, x.GetCommentList()[i])
+	}
 	return n
 }
 

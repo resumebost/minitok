@@ -92,3 +92,15 @@ func FavoriteCount(ctx context.Context, req *favorite.CountRequest) (*favorite.C
 	}
 	return resp, nil
 }
+
+func FavoriteCountByUser(ctx context.Context, req *favorite.CountByUserRequest) (*favorite.CountByUserResponse, error) {
+	resp, err := favoriteClient.CountByUser(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}

@@ -501,6 +501,116 @@ func (x *GetVideosResponse) GetVideos() []*Video {
 	return nil
 }
 
+type PublishListIdsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+}
+
+func (x *PublishListIdsRequest) Reset() {
+	*x = PublishListIdsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_service_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PublishListIdsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishListIdsRequest) ProtoMessage() {}
+
+func (x *PublishListIdsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_video_service_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishListIdsRequest.ProtoReflect.Descriptor instead.
+func (*PublishListIdsRequest) Descriptor() ([]byte, []int) {
+	return file_video_service_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *PublishListIdsRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type PublishListIdsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	StatusCode  int32   `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`
+	StatusMsg   string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`
+	VideoIdList []int64 `protobuf:"varint,3,rep,packed,name=video_id_list,json=videoIdList,proto3" json:"video_id_list,omitempty"`
+}
+
+func (x *PublishListIdsResponse) Reset() {
+	*x = PublishListIdsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_service_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PublishListIdsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishListIdsResponse) ProtoMessage() {}
+
+func (x *PublishListIdsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_video_service_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishListIdsResponse.ProtoReflect.Descriptor instead.
+func (*PublishListIdsResponse) Descriptor() ([]byte, []int) {
+	return file_video_service_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *PublishListIdsResponse) GetStatusCode() int32 {
+	if x != nil {
+		return x.StatusCode
+	}
+	return 0
+}
+
+func (x *PublishListIdsResponse) GetStatusMsg() string {
+	if x != nil {
+		return x.StatusMsg
+	}
+	return ""
+}
+
+func (x *PublishListIdsResponse) GetVideoIdList() []int64 {
+	if x != nil {
+		return x.VideoIdList
+	}
+	return nil
+}
+
 var File_video_service_proto protoreflect.FileDescriptor
 
 var file_video_service_proto_rawDesc = []byte{
@@ -556,7 +666,18 @@ var file_video_service_proto_rawDesc = []byte{
 	0x75, 0x73, 0x5f, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x74,
 	0x61, 0x74, 0x75, 0x73, 0x4d, 0x73, 0x67, 0x12, 0x24, 0x0a, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f,
 	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e,
-	0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x32, 0x91, 0x02,
+	0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x22, 0x30, 0x0a,
+	0x15, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x64, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22,
+	0x7c, 0x0a, 0x16, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x64,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x5f, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x4d, 0x73, 0x67, 0x12, 0x22, 0x0a, 0x0d, 0x76, 0x69, 0x64,
+	0x65, 0x6f, 0x5f, 0x69, 0x64, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x03, 0x20, 0x03, 0x28, 0x03,
+	0x52, 0x0b, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x32, 0xde, 0x02,
 	0x0a, 0x0c, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2f,
 	0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12, 0x12, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x46,
 	0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x76, 0x69, 0x64,
@@ -574,9 +695,14 @@ var file_video_service_proto_rawDesc = []byte{
 	0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x73,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e,
 	0x47, 0x65, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x42, 0x19, 0x5a, 0x17, 0x6d, 0x69, 0x6e, 0x69, 0x74, 0x6f, 0x6b, 0x2f, 0x6b, 0x69, 0x74,
-	0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x12, 0x4b, 0x0a, 0x0e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x4c, 0x69, 0x73, 0x74,
+	0x49, 0x64, 0x73, 0x12, 0x1b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x50, 0x75, 0x62, 0x6c,
+	0x69, 0x73, 0x68, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x1c, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68,
+	0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x19,
+	0x5a, 0x17, 0x6d, 0x69, 0x6e, 0x69, 0x74, 0x6f, 0x6b, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f,
+	0x67, 0x65, 0x6e, 0x2f, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -591,35 +717,39 @@ func file_video_service_proto_rawDescGZIP() []byte {
 	return file_video_service_proto_rawDescData
 }
 
-var file_video_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_video_service_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_video_service_proto_goTypes = []interface{}{
-	(*FeedRequest)(nil),           // 0: video.FeedRequest
-	(*FeedResponse)(nil),          // 1: video.FeedResponse
-	(*PublishActionRequest)(nil),  // 2: video.PublishActionRequest
-	(*PublishActionResponse)(nil), // 3: video.PublishActionResponse
-	(*PublishListRequest)(nil),    // 4: video.PublishListRequest
-	(*PublishListResponse)(nil),   // 5: video.PublishListResponse
-	(*GetVideosRequest)(nil),      // 6: video.GetVideosRequest
-	(*GetVideosResponse)(nil),     // 7: video.GetVideosResponse
-	(*Video)(nil),                 // 8: video.Video
+	(*FeedRequest)(nil),            // 0: video.FeedRequest
+	(*FeedResponse)(nil),           // 1: video.FeedResponse
+	(*PublishActionRequest)(nil),   // 2: video.PublishActionRequest
+	(*PublishActionResponse)(nil),  // 3: video.PublishActionResponse
+	(*PublishListRequest)(nil),     // 4: video.PublishListRequest
+	(*PublishListResponse)(nil),    // 5: video.PublishListResponse
+	(*GetVideosRequest)(nil),       // 6: video.GetVideosRequest
+	(*GetVideosResponse)(nil),      // 7: video.GetVideosResponse
+	(*PublishListIdsRequest)(nil),  // 8: video.PublishListIdsRequest
+	(*PublishListIdsResponse)(nil), // 9: video.PublishListIdsResponse
+	(*Video)(nil),                  // 10: video.Video
 }
 var file_video_service_proto_depIdxs = []int32{
-	8, // 0: video.FeedResponse.video_list:type_name -> video.Video
-	8, // 1: video.PublishListResponse.video_list:type_name -> video.Video
-	8, // 2: video.GetVideosResponse.videos:type_name -> video.Video
-	0, // 3: video.VideoService.Feed:input_type -> video.FeedRequest
-	2, // 4: video.VideoService.PublishAction:input_type -> video.PublishActionRequest
-	4, // 5: video.VideoService.PublishList:input_type -> video.PublishListRequest
-	6, // 6: video.VideoService.GetVideos:input_type -> video.GetVideosRequest
-	1, // 7: video.VideoService.Feed:output_type -> video.FeedResponse
-	3, // 8: video.VideoService.PublishAction:output_type -> video.PublishActionResponse
-	5, // 9: video.VideoService.PublishList:output_type -> video.PublishListResponse
-	7, // 10: video.VideoService.GetVideos:output_type -> video.GetVideosResponse
-	7, // [7:11] is the sub-list for method output_type
-	3, // [3:7] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	10, // 0: video.FeedResponse.video_list:type_name -> video.Video
+	10, // 1: video.PublishListResponse.video_list:type_name -> video.Video
+	10, // 2: video.GetVideosResponse.videos:type_name -> video.Video
+	0,  // 3: video.VideoService.Feed:input_type -> video.FeedRequest
+	2,  // 4: video.VideoService.PublishAction:input_type -> video.PublishActionRequest
+	4,  // 5: video.VideoService.PublishList:input_type -> video.PublishListRequest
+	6,  // 6: video.VideoService.GetVideos:input_type -> video.GetVideosRequest
+	2,  // 7: video.VideoService.PublishListIds:input_type -> video.PublishActionRequest
+	1,  // 8: video.VideoService.Feed:output_type -> video.FeedResponse
+	3,  // 9: video.VideoService.PublishAction:output_type -> video.PublishActionResponse
+	5,  // 10: video.VideoService.PublishList:output_type -> video.PublishListResponse
+	7,  // 11: video.VideoService.GetVideos:output_type -> video.GetVideosResponse
+	3,  // 12: video.VideoService.PublishListIds:output_type -> video.PublishActionResponse
+	8,  // [8:13] is the sub-list for method output_type
+	3,  // [3:8] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_video_service_proto_init() }
@@ -725,6 +855,30 @@ func file_video_service_proto_init() {
 				return nil
 			}
 		}
+		file_video_service_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PublishListIdsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PublishListIdsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -732,7 +886,7 @@ func file_video_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_video_service_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -755,4 +909,5 @@ type VideoService interface {
 	PublishAction(ctx context.Context, req *PublishActionRequest) (res *PublishActionResponse, err error)
 	PublishList(ctx context.Context, req *PublishListRequest) (res *PublishListResponse, err error)
 	GetVideos(ctx context.Context, req *GetVideosRequest) (res *GetVideosResponse, err error)
+	PublishListIds(ctx context.Context, req *PublishActionRequest) (res *PublishActionResponse, err error)
 }

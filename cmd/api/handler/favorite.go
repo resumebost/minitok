@@ -78,8 +78,8 @@ func FavoriteList(c *gin.Context) {
 	resp, err := rpc.FavoriteList(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status_code":  unierr.GetVideoListFiled.ErrCode,
-			"status_msg":   unierr.GetVideoListFiled.ErrMsg,
+			"status_code":  unierr.GetFavoriteVideoListFiled.ErrCode,
+			"status_msg":   unierr.GetFavoriteVideoListFiled.ErrMsg,
 			"error":       "Failed to fetch favorite list",
 		})
 		fmt.Println(resp)

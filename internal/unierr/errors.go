@@ -35,6 +35,10 @@ var (
 
 var (
 	FavoriteActionError = NewErrCore(40001, "点赞或者取消点赞失败")
+	GetFavoriteVideoListFiled   = NewErrCore(40002, "点赞视频列表获取失败")
+	GetFavoriteJudgeFiled   = NewErrCore(40003, "判断是否点赞失败")
+	GetFavoriteVideoCountFiled   = NewErrCore(40004, "获取视频点赞总数失败")
+	GetUserFavoriteVideoCountFiled   = NewErrCore(40005, "获取用户的视频点赞总数失败")
 )
 
 var (

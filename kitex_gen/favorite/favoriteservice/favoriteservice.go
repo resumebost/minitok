@@ -22,10 +22,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "FavoriteService"
 	handlerType := (*favorite.FavoriteService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Action": kitex.NewMethodInfo(actionHandler, newActionArgs, newActionResult, false),
-		"List":   kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
-		"Judge":  kitex.NewMethodInfo(judgeHandler, newJudgeArgs, newJudgeResult, false),
-		"Count":  kitex.NewMethodInfo(countHandler, newCountArgs, newCountResult, false),
+		"Action":      kitex.NewMethodInfo(actionHandler, newActionArgs, newActionResult, false),
+		"List":        kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
+		"Judge":       kitex.NewMethodInfo(judgeHandler, newJudgeArgs, newJudgeResult, false),
+		"Count":       kitex.NewMethodInfo(countHandler, newCountArgs, newCountResult, false),
+		"CountByUser": kitex.NewMethodInfo(countByUserHandler, newCountByUserArgs, newCountByUserResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "favorite",
@@ -653,6 +654,159 @@ func (p *CountResult) GetResult() interface{} {
 	return p.Success
 }
 
+func countByUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(favorite.CountByUserRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(favorite.FavoriteService).CountByUser(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *CountByUserArgs:
+		success, err := handler.(favorite.FavoriteService).CountByUser(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*CountByUserResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newCountByUserArgs() interface{} {
+	return &CountByUserArgs{}
+}
+
+func newCountByUserResult() interface{} {
+	return &CountByUserResult{}
+}
+
+type CountByUserArgs struct {
+	Req *favorite.CountByUserRequest
+}
+
+func (p *CountByUserArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(favorite.CountByUserRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *CountByUserArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *CountByUserArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *CountByUserArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in CountByUserArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *CountByUserArgs) Unmarshal(in []byte) error {
+	msg := new(favorite.CountByUserRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var CountByUserArgs_Req_DEFAULT *favorite.CountByUserRequest
+
+func (p *CountByUserArgs) GetReq() *favorite.CountByUserRequest {
+	if !p.IsSetReq() {
+		return CountByUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *CountByUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CountByUserArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type CountByUserResult struct {
+	Success *favorite.CountByUserResponse
+}
+
+var CountByUserResult_Success_DEFAULT *favorite.CountByUserResponse
+
+func (p *CountByUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(favorite.CountByUserResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *CountByUserResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *CountByUserResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *CountByUserResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in CountByUserResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *CountByUserResult) Unmarshal(in []byte) error {
+	msg := new(favorite.CountByUserResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *CountByUserResult) GetSuccess() *favorite.CountByUserResponse {
+	if !p.IsSetSuccess() {
+		return CountByUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *CountByUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*favorite.CountByUserResponse)
+}
+
+func (p *CountByUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CountByUserResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -698,6 +852,16 @@ func (p *kClient) Count(ctx context.Context, Req *favorite.CountRequest) (r *fav
 	_args.Req = Req
 	var _result CountResult
 	if err = p.c.Call(ctx, "Count", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CountByUser(ctx context.Context, Req *favorite.CountByUserRequest) (r *favorite.CountByUserResponse, err error) {
+	var _args CountByUserArgs
+	_args.Req = Req
+	var _result CountByUserResult
+	if err = p.c.Call(ctx, "CountByUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

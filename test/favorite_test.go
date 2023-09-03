@@ -40,6 +40,11 @@ func TestCount(t *testing.T) {
 	doCount(ctx, t)
 }
 
+// go test -v ./test/favorite_test.go -run TestCountByUser
+func TestCountByUser(t *testing.T) {
+	doCountByUser(ctx, t)
+}
+
 func doAction(ctx context.Context, t *testing.T) {
 	resp, err := rpc.FavoriteAction(ctx, &favorite.ActionRequest{
 		Token:      token,
@@ -71,6 +76,15 @@ func doJudge(ctx context.Context, t *testing.T) {
 func doCount(ctx context.Context, t *testing.T) {
 	resp, err := rpc.FavoriteCount(ctx, &favorite.CountRequest{
 		VideoIdList: []int64{1, 2, 10},
+	})
+	assert.NoError(t, err)
+	fmt.Printf("rpc服务响应：%v", resp)
+}
+
+
+func doCountByUser(ctx context.Context, t *testing.T) {
+	resp, err := rpc.FavoriteCountByUser(ctx, &favorite.CountByUserRequest{
+		UserId: 1,
 	})
 	assert.NoError(t, err)
 	fmt.Printf("rpc服务响应：%v", resp)

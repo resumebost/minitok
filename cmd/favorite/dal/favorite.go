@@ -105,3 +105,14 @@ func GetFavoriteCounts(ctx context.Context, videoIDs []int64) ([]int64, error) {
 
 	return counts, nil
 }
+
+func CountFavoritesByUser(ctx context.Context, userID int64) (int64, error) {
+	db := GormDB.WithContext(ctx)
+
+	var count int64
+	if err := db.Model(&Favorite{}).Where("user_id = ?", userID).Count(&count).Error; err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
