@@ -6,10 +6,14 @@ import (
 	"math/rand"
 	"minitok/cmd/user/dal"
 	"minitok/cmd/user/pkg/snowflake"
+	"minitok/cmd/user/rpc"
 	"minitok/cmd/user/tool"
 	"minitok/internal/jwt"
 	"minitok/internal/unierr"
+	"minitok/kitex_gen/favorite"
 	user "minitok/kitex_gen/user"
+	"minitok/kitex_gen/video"
+	"sync"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -25,7 +29,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 			StatusMsg:  unierr.InternalError.ErrMsg,
 		}
 		return res, nil
-	} else if usr.UserName != "" {
+	} else if usr.Username != "" {
 		res := &user.RegisterResponse{
 			StatusCode: unierr.UsernameExist.ErrCode,
 			StatusMsg:  unierr.UsernameExist.ErrMsg,
@@ -37,8 +41,9 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 
 	// 创建user
 	usr = &dal.User{
-		UserID:   userID,
-		UserName: req.Username,
+		ID: userID,
+		//ID:       userID,
+		Username: req.Username,
 		Password: tool.EncryptPassword(req.Password),
 		Avatar:   fmt.Sprintf("default%d.png", rand.Intn(10)),
 	}
@@ -51,7 +56,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 		return res, nil
 	}
 
-	token, err := jwt.GenToken(usr.UserID, usr.UserName)
+	token, err := jwt.GenToken(usr.ID, usr.Username)
 	if err != nil {
 		res := &user.RegisterResponse{
 			StatusCode: unierr.InternalError.ErrCode,
@@ -63,7 +68,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 	res := &user.RegisterResponse{
 		StatusCode: unierr.SuccessCode.ErrCode,
 		StatusMsg:  unierr.SuccessCode.ErrMsg,
-		UserId:     usr.UserID,
+		UserId:     usr.ID,
 		Token:      token,
 	}
 	return res, nil
@@ -97,11 +102,11 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (re
 	}
 
 	usr = &dal.User{
-		UserID:   usr.UserID,
-		UserName: req.Username,
+		ID:       usr.ID,
+		Username: req.Username,
 	}
 
-	token, err := jwt.GenToken(usr.UserID, usr.UserName)
+	token, err := jwt.GenToken(usr.ID, usr.Username)
 	if err != nil {
 		res := &user.LoginResponse{
 			StatusCode: unierr.InternalError.ErrCode,
@@ -113,7 +118,7 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (re
 	res := &user.LoginResponse{
 		StatusCode: unierr.SuccessCode.ErrCode,
 		StatusMsg:  unierr.SuccessCode.ErrMsg,
-		UserId:     usr.UserID,
+		UserId:     usr.ID,
 		Token:      token,
 	}
 	return res, nil
@@ -145,24 +150,65 @@ func (s *UserServiceImpl) Info(ctx context.Context, req *user.InfoRequest) (resp
 		}
 		return res, nil
 	}
+	rUser := user.User{
+		Id:   usr.ID,
+		Name: usr.Username,
+	}
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	//视频数量和获赞数量
+	go func() {
+		defer wg.Done()
+		//视频数量
+		reqVideo := &video.PublishListIdsRequest{UserId: req.UserId}
+		respPublishListIds, err := rpc.GetPublishListIds(ctx, reqVideo)
+		if err != nil {
+			resp = &user.InfoResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+		rUser.WorkCount = int64(len(respPublishListIds.VideoIdList))
+
+		//获赞数量
+		reqFavoriteCount := &favorite.CountRequest{VideoIdList: respPublishListIds.VideoIdList}
+		respFavoriteCount, err := rpc.FavoriteCount(ctx, reqFavoriteCount)
+		if err != nil {
+			resp = &user.InfoResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+		rUser.TotalFavorited = int64(len(respFavoriteCount.FavoriteCountList))
+	}()
+
+	//点赞数量
+	go func() {
+		defer wg.Done()
+		reqCountByUser := &favorite.CountByUserRequest{UserId: req.UserId}
+		respCountByUser, err := rpc.FavoriteCountByUser(ctx, reqCountByUser)
+		if err != nil {
+			resp = &user.InfoResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+		rUser.FavoriteCount = respCountByUser.FavoriteCount
+
+	}()
 
 	res := &user.InfoResponse{
 		StatusCode: unierr.SuccessCode.ErrCode,
 		StatusMsg:  unierr.SuccessCode.ErrMsg,
-		User: &user.User{
-			Id:              usr.UserID,
-			Name:            usr.UserName,
-			FollowCount:     int64(usr.FollowerCount),
-			FollowerCount:   int64(usr.FollowingCount),
-			IsFollow:        usr.UserID == userID,
-			Avatar:          usr.Avatar,
-			BackgroundImage: usr.BackgroundImage,
-			Signature:       usr.Signature,
-			TotalFavorited:  int64(usr.TotalFavorited),
-			WorkCount:       int64(usr.WorkCount),
-			FavoriteCount:   int64(usr.FavoriteCount),
-		},
+		User:       &rUser,
 	}
-
+	wg.Wait()
 	return res, nil
 }
