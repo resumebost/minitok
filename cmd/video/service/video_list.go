@@ -74,8 +74,9 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 		}
 
 		res[i] = &video.Video{
-			Id:            int64(v.ID),
-			Author:        author.User,
+			Id:     int64(v.ID),
+			Author: author.User,
+			//Author:        &user.User{},
 			PlayUrl:       v.PlayURL,
 			CoverUrl:      v.CoverURL,
 			FavoriteCount: favoriteCount.FavoriteCountList[i],

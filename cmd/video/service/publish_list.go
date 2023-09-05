@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"minitok/cmd/video/dal"
 	"minitok/cmd/video/rpc"
 	"minitok/internal/unierr"
@@ -25,6 +26,7 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	userId := req.UserId
 
 	videos, err := dal.GetVideosByAuthorDescByTime(userId, s.ctx)
+	fmt.Println(videos)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +74,9 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 
 	for i, v := range videos {
 		res[i] = &video.Video{
-			Id:            int64(v.ID),
-			Author:        author.User, //同一用户发布的视频作者相同，都为用户自己
+			Id:     int64(v.ID),
+			Author: author.User, //同一用户发布的视频作者相同，都为用户自己
+			//Author:        &user.User{},
 			PlayUrl:       v.PlayURL,
 			CoverUrl:      v.CoverURL,
 			FavoriteCount: favoriteCount.FavoriteCountList[i],

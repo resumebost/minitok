@@ -23,12 +23,10 @@ func ConvertToFavoriteVideo(video *v.Video) *v.Video {
 }
 
 // 解析并封装rpc返回的结果
-func ConvertToFavoriteVideos(videoMap map[int64]*v.Video, likedVideoIDs []int64) []*v.Video {
+func ConvertToFavoriteVideos(videoMap map[int64]*v.Video) []*v.Video {
 	likedVideos := make([]*v.Video, 0)
-	for _, videoID := range likedVideoIDs {
-		if video, ok := videoMap[videoID]; ok {
-			likedVideos = append(likedVideos, ConvertToFavoriteVideo(video))
-		}
+	for _, video := range videoMap {
+		likedVideos = append(likedVideos, ConvertToFavoriteVideo(video))
 	}
 	return likedVideos
 }

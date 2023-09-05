@@ -64,3 +64,15 @@ func CommentList(ctx context.Context, req *comment.ListRequest) (*comment.ListRe
 	}
 	return resp, nil
 }
+
+func CommentCount(ctx context.Context, req *comment.CountRequest) (*comment.CountResponse, error) {
+	resp, err := commentClient.Count(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}

@@ -78,3 +78,27 @@ func Feed(ctx context.Context, req *video.FeedRequest) (*video.FeedResponse, err
 	}
 	return resp, nil
 }
+
+func VideoList(ctx context.Context, req *video.GetVideosRequest) (*video.GetVideosResponse, error) {
+	resp, err := videoClient.GetVideos(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func VideoIdList(ctx context.Context, req *video.PublishListIdsRequest) (*video.PublishListIdsResponse, error) {
+	resp, err := videoClient.PublishListIds(ctx, req)
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
