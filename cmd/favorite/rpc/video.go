@@ -46,9 +46,9 @@ func initVideoRPC() {
 
 // 请求查询
 // GetVideosInfo multiple get list of video info
-func GetVideosInfo(ctx context.Context,token string, videoIDs []int64) (map[int64]*video.Video, error) {
+func GetVideosInfo(ctx context.Context, token string, videoIDs []int64) ([]*video.Video, error) {
 	req := &video.GetVideosRequest{
-		Token: token,
+		Token:    token,
 		VideoIds: videoIDs,
 	}
 
@@ -58,15 +58,15 @@ func GetVideosInfo(ctx context.Context,token string, videoIDs []int64) (map[int6
 		return nil, err
 	}
 
-  	// rpc响应异常处理
-	  if resp.StatusCode != 0 {
+	// rpc响应异常处理
+	if resp.StatusCode != 0 {
 		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
 	}
 
-	videoMap := make(map[int64]*video.Video)
-	for _, v := range resp.Videos {
-		videoMap[v.Id] = v
-	}
+	// videoMap := make(map[int64]*video.Video)
+	// for _, v := range resp.Videos {
+	// 	videoMap[v.Id] = v
+	// }
 
-	return videoMap, nil
+	return resp.Videos, nil
 }

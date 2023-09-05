@@ -189,3 +189,29 @@ INSERT INTO `videos` VALUES (19,'2023-08-22 22:50:01.295','2023-08-22 22:50:01.2
                             (40,'2023-08-24 04:00:13.513','2023-08-24 04:00:13.513',NULL,2,'https://minitok-video.oss-cn-shanghai.aliyuncs.com/7ceedfdc-8477-4ad6-90f9-d905a0ee1ea9.mp4','https://minitok-video.oss-cn-shanghai.aliyuncs.com/76340b76-bc1e-4409-bd84-6615503e49d0.png','测试用3');
 
 # relate user1,2
+
+
+
+# favorites data
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:20:56.193', '2023-09-05 04:20:56.193', NULL, '1', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:25.048', '2023-09-05 04:21:25.048', NULL, '2', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:28.536', '2023-09-05 04:21:28.536', NULL, '3', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:31.771', '2023-09-05 04:21:31.771', NULL, '4', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:35.869', '2023-09-05 04:21:35.869', NULL, '5', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:39.345', '2023-09-05 04:21:39.345', NULL, '6', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:42.450', '2023-09-05 04:21:42.450', NULL, '7', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:50.740', '2023-09-05 04:21:50.740', NULL, '8', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:53.895', '2023-09-05 04:21:53.895', NULL, '9', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:21:57.609', '2023-09-05 04:21:57.609', NULL, '10', '1');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:29:57.149', '2023-09-05 04:29:57.149', NULL, '1', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:04.912', '2023-09-05 04:30:04.912', NULL, '2', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:07.733', '2023-09-05 04:30:07.733', NULL, '3', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:10.436', '2023-09-05 04:30:10.436', NULL, '4', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:13.201', '2023-09-05 04:30:13.201', NULL, '5', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:22.284', '2023-09-05 04:30:22.284', NULL, '6', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:25.919', '2023-09-05 04:30:25.919', NULL, '7', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:28.314', '2023-09-05 04:30:28.314', NULL, '8', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:30.698', '2023-09-05 04:30:30.698', NULL, '9', '2');
+INSERT INTO `favorites`(`created_at`, `updated_at`, `deleted_at`, `video_id`, `user_id`) VALUES ('2023-09-05 04:30:33.595', '2023-09-05 04:30:33.595', NULL, '10', '2');
+
+# relate user: 1,2 videos: [1,10]

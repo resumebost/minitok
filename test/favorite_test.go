@@ -15,6 +15,7 @@ import (
 
 var ctx = context.Background() // 定义上下文
 var token, _ = jwt.GenToken(1, "xiayi")
+
 func TestMain(m *testing.M) {
 	constant.InitConstant() // 初始化配置
 	rpc.InitRPC()           // 初始化rpc服务
@@ -25,9 +26,10 @@ func TestMain(m *testing.M) {
 func TestAction(t *testing.T) {
 	doAction(ctx, t)
 }
+
 // go test -v ./test/favorite_test.go -run TestList
 func TestList(t *testing.T) {
-	doList(ctx,t)
+	doList(ctx, t)
 }
 
 // go test -v ./test/favorite_test.go -run TestJudge
@@ -35,7 +37,7 @@ func TestJudge(t *testing.T) {
 	doJudge(ctx, t)
 }
 
-// go test -v ./test/favorite_test.go -run TestCount
+// go test -v ./test/favorite_test.go -run TestCount$ 	//$表示不需要匹配下面的
 func TestCount(t *testing.T) {
 	doCount(ctx, t)
 }
@@ -80,7 +82,6 @@ func doCount(ctx context.Context, t *testing.T) {
 	assert.NoError(t, err)
 	fmt.Printf("rpc服务响应：%v", resp)
 }
-
 
 func doCountByUser(ctx context.Context, t *testing.T) {
 	resp, err := rpc.FavoriteCountByUser(ctx, &favorite.CountByUserRequest{
