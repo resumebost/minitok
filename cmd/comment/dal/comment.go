@@ -26,7 +26,7 @@ func CreateComment(comment *Comment, ctx context.Context) (*Comment, error) {
 }
 
 func DeleteComment(commentId int64, ctx context.Context) error {
-	result := GormDB.WithContext(ctx).Where("id = ?", commentId).Delete(Comment{})
+	result := GormDB.WithContext(ctx).Where("id = ?", commentId).Delete(&Comment{})
 	return result.Error
 }
 

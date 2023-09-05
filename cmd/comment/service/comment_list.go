@@ -45,8 +45,9 @@ func (s *CommentListService) CommentList(req *comment.ListRequest) ([]*comment.C
 		}
 
 		res[i] = &comment.Comment{
-			Id:         int64(c.ID),
-			User:       author.User,
+			Id:   int64(c.ID),
+			User: author.User,
+			//User:       &user.User{},
 			Content:    c.Content,
 			CreateDate: c.CreatedAt.Format("01-02"),
 		}

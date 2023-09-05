@@ -46,8 +46,9 @@ func (s *CommentActionService) PostComment(req *comment.ActionRequest) (*comment
 	}
 
 	res := &comment.Comment{
-		Id:         int64(createComment.ID),
-		User:       author.User,
+		Id:   int64(createComment.ID),
+		User: author.User,
+		//User:       &user.User{},
 		Content:    createComment.Content,
 		CreateDate: createComment.CreatedAt.Format("01-02"), //MM-dd格式
 	}
