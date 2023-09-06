@@ -22,7 +22,7 @@ var (
 )
 
 var (
-	UsernameOrPassword                    = NewErrCore(30001, "用户名或密码为空")
+	UsernameOrPasswordIsEmpty             = NewErrCore(30001, "用户名或密码为空")
 	UsernameOrPasswordLenMore32Characters = NewErrCore(30002, "用户名或密码长度不能大于32个字符")
 	UsernameOrPasswordFailToUpload        = NewErrCore(30003, "用户名或密码上传失败")
 	UsernameExist                         = NewErrCore(30004, "该用户名已存在")
@@ -34,11 +34,11 @@ var (
 )
 
 var (
-	FavoriteActionError = NewErrCore(40001, "点赞或者取消点赞失败")
-	GetFavoriteVideoListFiled   = NewErrCore(40002, "点赞视频列表获取失败")
-	GetFavoriteJudgeFiled   = NewErrCore(40003, "判断是否点赞失败")
-	GetFavoriteVideoCountFiled   = NewErrCore(40004, "获取视频点赞总数失败")
-	GetUserFavoriteVideoCountFiled   = NewErrCore(40005, "获取用户的视频点赞总数失败")
+	FavoriteActionError            = NewErrCore(40001, "点赞或者取消点赞失败")
+	GetFavoriteVideoListFiled      = NewErrCore(40002, "点赞视频列表获取失败")
+	GetFavoriteJudgeFiled          = NewErrCore(40003, "判断是否点赞失败")
+	GetFavoriteVideoCountFiled     = NewErrCore(40004, "获取视频点赞总数失败")
+	GetUserFavoriteVideoCountFiled = NewErrCore(40005, "获取用户的视频点赞总数失败")
 )
 
 var (
