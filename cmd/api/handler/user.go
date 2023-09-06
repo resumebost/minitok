@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"minitok/cmd/api/rpc"
-	"minitok/cmd/user/model"
 	"minitok/internal/unierr"
 	"minitok/kitex_gen/user"
 	"net/http"
@@ -11,17 +10,18 @@ import (
 )
 
 func UserRegister(c *gin.Context) {
-	p := new(model.ParamUserRegister)
-	//校验参数
-	if err := c.ShouldBindJSON(&p); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status_code": unierr.IllegalParams.ErrCode,
-			"status_msg":  unierr.IllegalParams.ErrMsg,
+	Username := c.Query("username")
+	Password := c.Query("password")
+
+	if len(Username) == 0 || len(Password) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": unierr.UsernameOrPasswordIsEmpty.ErrCode,
+			"status_msg":  unierr.UsernameOrPasswordIsEmpty.ErrMsg,
 		})
 		return
 	}
 
-	if len(p.Username) > 32 || len(p.Password) > 32 {
+	if len(Username) > 32 || len(Password) > 32 {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": unierr.UsernameOrPasswordLenMore32Characters.ErrCode,
 			"status_msg":  unierr.UsernameOrPasswordLenMore32Characters.ErrMsg,
@@ -29,8 +29,8 @@ func UserRegister(c *gin.Context) {
 		return
 	}
 	req := &user.RegisterRequest{
-		Username: p.Username,
-		Password: p.Password,
+		Username: Username,
+		Password: Password,
 	}
 
 	resp, err := rpc.Register(c.Request.Context(), req)
@@ -47,16 +47,16 @@ func UserRegister(c *gin.Context) {
 }
 
 func UserLogin(c *gin.Context) {
-	p := new(model.ParamUserLogin)
-	//校验参数
-	if err := c.ShouldBindJSON(&p); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status_code": unierr.IllegalParams.ErrCode,
-			"status_msg":  unierr.IllegalParams.ErrMsg,
+	Username := c.Query("username")
+	Password := c.Query("password")
+	if len(Username) == 0 || len(Password) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": unierr.UsernameOrPasswordIsEmpty.ErrCode,
+			"status_msg":  unierr.UsernameOrPasswordIsEmpty.ErrMsg,
 		})
 		return
 	}
-	if len(p.Username) > 32 || len(p.Password) > 32 {
+	if len(Username) > 32 || len(Password) > 32 {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": unierr.UsernameOrPasswordLenMore32Characters.ErrCode,
 			"status_msg":  unierr.UsernameOrPasswordLenMore32Characters.ErrMsg,
@@ -65,8 +65,8 @@ func UserLogin(c *gin.Context) {
 	}
 
 	req := &user.LoginRequest{
-		Username: p.Username,
-		Password: p.Password,
+		Username: Username,
+		Password: Password,
 	}
 
 	resp, err := rpc.Login(c.Request.Context(), req)
