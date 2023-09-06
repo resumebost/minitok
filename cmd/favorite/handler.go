@@ -16,20 +16,9 @@ type FavoriteServiceImpl struct{}
 // Action implements the FavoriteServiceImpl interface.
 func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRequest) (resp *favorite.ActionResponse, err error) {
 
-	// userID := ctx.Value("id").(int64) // 用户id
-	claims, err := jwt.ParseToken(req.Token)
-	if err != nil {
-		return
-	}
-	userID := claims.ID
-
-	resp = new(favorite.ActionResponse)
-	if req.ActionType == 1 { //  1 represents "like" action
-		err = service.NewLikeVideoService(ctx).LikeVideo(userID, req.VideoId)
-	} else if req.ActionType == 2 { //  2 represents "unlike" action
-		err = service.NewLikeVideoService(ctx).UnlikeVideo(userID, req.VideoId)
-	} else {
-		err = errors.New("invalid action type , input 1 or 2")
+	//参数有误
+	if req.ActionType != 1 && req.ActionType != 2 {
+	err = errors.New("invalid action type , input 1 or 2")
 		resp = &favorite.ActionResponse{
 			StatusCode: unierr.IllegalParams.ErrCode,
 			StatusMsg:  unierr.IllegalParams.ErrMsg,
@@ -37,6 +26,15 @@ func (s *FavoriteServiceImpl) Action(ctx context.Context, req *favorite.ActionRe
 		return resp, err
 	}
 
+	// userID := ctx.Value("id").(int64) // 用户id
+	claims, err := jwt.ParseToken(req.Token)
+	if err != nil {
+		return
+	}
+	userID := claims.ID
+	resp = new(favorite.ActionResponse)
+
+	err = service.NewLikeVideoService(ctx).LikeOrUnlikeVideo(userID,req.VideoId,req.ActionType)
 	if err != nil {
 		resp = &favorite.ActionResponse{
 			StatusCode: unierr.FavoriteActionError.ErrCode,
