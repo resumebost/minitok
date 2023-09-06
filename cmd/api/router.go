@@ -11,13 +11,13 @@ func initRouter(r *gin.Engine) {
 
 	router.POST("/user/register/", handler.UserRegister)
 	router.POST("/user/login/", handler.UserLogin)
+	router.GET("/feed/", handler.VideoFeed)
 
 	// 后续接口由 AuthMiddleware 统一校验 jwt token
 	router.Use(middleware.AuthMiddleware())
 
 	router.GET("/user/", handler.UserInfo)
 
-	router.GET("/feed/", handler.VideoFeed)
 	router.POST("/publish/action/", handler.VideoPublishAction)
 	router.GET("/publish/list/", handler.VideoPublishList)
 

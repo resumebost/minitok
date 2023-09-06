@@ -102,6 +102,7 @@ func UserInfo(c *gin.Context) {
 	}
 
 	resp, err := rpc.Info(c.Request.Context(), req)
+	// 这里怎么就直接 Internal Error 了
 	if err != nil {
 		c.JSON(http.StatusOK, unierr.InternalError)
 		return

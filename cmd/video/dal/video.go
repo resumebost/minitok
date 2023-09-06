@@ -4,7 +4,6 @@ import (
 	"context"
 	"gorm.io/gorm"
 	"minitok/internal/dal"
-	"time"
 )
 
 var GormDB *gorm.DB
@@ -59,9 +58,9 @@ func GetVideoIdsByAuthor(authorID int64, ctx context.Context) ([]int64, error) {
 func GetVideosDescByTimeLimit(latestTime int64, videoNum int, ctx context.Context) ([]*Video, error) {
 	var videos []*Video
 
-	videoTime := time.Unix(latestTime, 0).Format("2006-01-02 15:04:05")
+	// videoTime := time.Unix(latestTime, 0).Format("2006-01-02 15:04:05")
 	result := GormDB.WithContext(ctx).
-		Where("created_at < ?", videoTime).
+		Where("unix_timestamp(created_at) < ?", latestTime).
 		Order("created_at desc").
 		Limit(videoNum).
 		Find(&videos)

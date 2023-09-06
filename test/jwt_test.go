@@ -7,6 +7,6 @@ import (
 )
 
 func TestGenToken(t *testing.T) {
-	str, _ := jwt.GenToken(1, "xiayi")
+	str, _ := jwt.GenToken(1, "xxhhy")
 	fmt.Println(str)
 }
