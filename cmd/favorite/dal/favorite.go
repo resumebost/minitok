@@ -33,6 +33,22 @@ func DeleteFavorite(ctx context.Context, userID int64, videoID int64) error {
 	return db.Where("user_id = ? AND video_id = ?", userID, videoID).Delete(&Favorite{}).Error
 }
 
+func CheckIfUserLikedVideo(ctx context.Context, userID int64, videoID int64) (bool, error) {
+	db := GormDB.WithContext(ctx)
+	var count int64
+
+	err := db.Model(&Favorite{}).
+		Where("user_id = ? AND video_id = ?", userID, videoID).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	// 如果count大于0，表示用户已经点赞
+	return count > 0, nil
+}
+
 // GetUserLikedVideoIDs retrieves video IDs that the user has liked.
 func GetUserLikedVideoIDs(ctx context.Context, userID int64) ([]int64, error) {
 	var likedVideoIDs []int64
