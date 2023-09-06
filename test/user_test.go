@@ -14,12 +14,6 @@ import (
 var ctxUser = context.Background() // 定义上下文
 var tokenUser, _ = jwt.GenToken(4139418956861440, "xiayi")
 
-//func TestMain(m *testing.M) {
-//	constant.InitConstant() // 初始化配置
-//	rpc.InitRPC()           // 初始化rpc服务
-//	m.Run()
-//}
-
 func TestUser(t *testing.T) {
 	constant.InitConstant() // 初始化配置
 	rpc.InitRPC()           // 初始化rpc服务
