@@ -76,8 +76,6 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 	}()
 	wg.Wait()
 
-	var wg2 sync.WaitGroup
-	wg2.Add(2)
 	//删除本地暂存的视频
 	go func() {
 		defer func() {
@@ -85,7 +83,6 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 				klog.Fatalf("本地视频删除失败: %s", err)
 			}
 		}()
-		defer wg2.Done()
 		err := os.Remove(videoPath)
 		if err != nil {
 			klog.Fatalf("本地视频删除失败: %s", err)
@@ -97,13 +94,11 @@ func (s *PublishActionService) PublishVideo(req *video.PublishActionRequest) err
 				klog.Fatalf("本地封面删除失败: %s", err)
 			}
 		}()
-		defer wg2.Done()
 		err := os.Remove(coverPath)
 		if err != nil {
 			klog.Fatalf("本地封面删除失败: %s", err)
 		}
 	}()
-	wg2.Wait()
 
 	//存储到数据库
 	//id := s.ctx.Value("id") //取不到，值从api那边的RPC调用到video这边就消失了似乎

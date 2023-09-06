@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"minitok/cmd/video/dal"
 	"minitok/cmd/video/rpc"
 	"minitok/internal/unierr"
@@ -9,6 +10,7 @@ import (
 	"minitok/kitex_gen/favorite"
 	"minitok/kitex_gen/user"
 	"minitok/kitex_gen/video"
+	"sync"
 )
 
 type FeedService struct {
@@ -45,31 +47,59 @@ func (s *FeedService) Feed(req *video.FeedRequest) ([]*video.Video, int64, error
 		authorIds[i] = v.AuthorID
 	}
 	res := make([]*video.Video, len(videos))
-	nextTime := videos[videoNum-1].CreatedAt.Unix()
+	nextTime := videos[videoNum-1].CreatedAt.UnixMilli()
 
+	var favoriteCount *favorite.CountResponse
+	var commentCount *comment.CountResponse
+	var isFavorite *favorite.JudgeResponse
+
+	var wg sync.WaitGroup
+	wg.Add(3)
 	//获取视频点赞数
-	favoriteCount, err := rpc.CountFavorite(s.ctx, &favorite.CountRequest{VideoIdList: videoIds})
-	if err != nil {
-		return nil, 0, unierr.NewErrCore(
-			favoriteCount.StatusCode,
-			favoriteCount.StatusMsg)
-	}
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("count favorite filed: %s", err)
+			}
+		}()
+		defer wg.Done()
+		favoriteCount, err = rpc.CountFavorite(s.ctx, &favorite.CountRequest{VideoIdList: videoIds})
+		if err != nil {
+			klog.Fatalf("count favorite filed: %s", err)
+		}
+	}()
+
 	//获取视频评论数
-	commentCount, err := rpc.CountComment(s.ctx, &comment.CountRequest{VideoIdList: videoIds})
-	if err != nil {
-		return nil, 0, unierr.NewErrCore(
-			commentCount.StatusCode,
-			commentCount.StatusMsg)
-	}
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("count comment filed: %s", err)
+			}
+		}()
+		defer wg.Done()
+		commentCount, err = rpc.CountComment(s.ctx, &comment.CountRequest{VideoIdList: videoIds})
+		if err != nil {
+			klog.Fatalf("count comment filed: %s", err)
+		}
+	}()
+
 	//获取用户是否点赞过视频
-	isFavorite, err := rpc.JudgeFavorite(s.ctx, &favorite.JudgeRequest{
-		VideoIdList: videoIds,
-		Token:       req.Token})
-	if err != nil {
-		return nil, 0, unierr.NewErrCore(
-			isFavorite.StatusCode,
-			isFavorite.StatusMsg)
-	}
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("judge favorite filed: %s", err)
+			}
+		}()
+		defer wg.Done()
+		isFavorite, err = rpc.JudgeFavorite(s.ctx, &favorite.JudgeRequest{
+			VideoIdList: videoIds,
+			Token:       req.Token})
+		if err != nil {
+			klog.Fatalf("judge favorite filed: %s", err)
+		}
+	}()
+
+	wg.Wait()
 
 	for i, v := range videos {
 		//获取视频作者信息
