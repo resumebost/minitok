@@ -31,22 +31,24 @@ func (s *CommentListService) CommentList(req *comment.ListRequest) ([]*comment.C
 		return []*comment.Comment{}, nil
 	}
 
+	authorIdList := make([]int64, len(comments))
+	for i, c := range comments {
+		authorIdList[i] = c.UserID
+	}
 	res := make([]*comment.Comment, len(comments))
 
-	for i, c := range comments {
-		author, err := rpc.GetUserInfo(s.ctx, &user.InfoRequest{
-			UserId: c.UserID,
-			Token:  req.Token,
-		})
-		if err != nil {
-			return nil, unierr.NewErrCore(
-				author.StatusCode,
-				author.StatusMsg)
-		}
+	authors, err := rpc.GetUsers(s.ctx, &user.GetUsersRequest{
+		UserIdList: authorIdList})
+	if err != nil {
+		return nil, unierr.NewErrCore(
+			authors.StatusCode,
+			authors.StatusMsg)
+	}
 
+	for i, c := range comments {
 		res[i] = &comment.Comment{
 			Id:   int64(c.ID),
-			User: author.User,
+			User: authors.User[i],
 			//User:       &user.User{},
 			Content:    c.Content,
 			CreateDate: c.CreatedAt.Format("01-02"),

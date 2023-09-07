@@ -53,3 +53,25 @@ func GetUserInfo(ctx context.Context, req *user.InfoRequest) (*user.InfoResponse
 	}
 	return resp, nil
 }
+
+func GetUser(ctx context.Context, req *user.GetUserRequest) (*user.GetUserResponse, error) {
+	resp, err := userClient.GetUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}
+
+func GetUsers(ctx context.Context, req *user.GetUsersRequest) (*user.GetUsersResponse, error) {
+	resp, err := userClient.GetUsers(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, unierr.NewErrCore(resp.StatusCode, resp.StatusMsg)
+	}
+	return resp, nil
+}

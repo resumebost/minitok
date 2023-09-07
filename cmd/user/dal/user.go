@@ -87,3 +87,15 @@ func GetUserByID(ctx context.Context, userID int64) (*User, error) {
 
 	return res, nil
 }
+
+func GetUsersByIDList(ctx context.Context, userIDList []int64) ([]*User, error) {
+	var users = make([]*User, len(userIDList))
+
+	for i, id := range userIDList {
+		result := GormDB.WithContext(ctx).First(&users[i], id)
+		if result.Error != nil {
+			return nil, result.Error
+		}
+	}
+	return users, nil
+}

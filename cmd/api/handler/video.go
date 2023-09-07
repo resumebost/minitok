@@ -19,8 +19,7 @@ func VideoFeed(c *gin.Context) {
 
 	//若时间为空则默认当前时间
 	if len(timeStr) == 0 {
-		//err := os.Setenv("TZ", "Asia/Shanghai")
-		req.LatestTime = time.Now().Unix() //精确到秒
+		req.LatestTime = time.Now().UTC().UnixMilli() //实际为毫秒
 	} else {
 		var err error
 		req.LatestTime, err = strconv.ParseInt(timeStr, 10, 64)

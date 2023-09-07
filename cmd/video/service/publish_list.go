@@ -45,7 +45,7 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	var favoriteCount *favorite.CountResponse
 	var commentCount *comment.CountResponse
 	var isFavorite *favorite.JudgeResponse
-	var author *user.InfoResponse
+	var author *user.GetUserResponse
 
 	var wg sync.WaitGroup
 	wg.Add(4)
@@ -53,13 +53,13 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("count favorite filed: %s", err)
+				klog.Fatalf("count favorite failed: %s", err)
 			}
 		}()
 		defer wg.Done()
 		favoriteCount, err = rpc.CountFavorite(s.ctx, &favorite.CountRequest{VideoIdList: videoIds})
 		if err != nil {
-			klog.Fatalf("count favorite filed: %s", err)
+			klog.Fatalf("count favorite failed: %s", err)
 		}
 	}()
 
@@ -67,13 +67,13 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("count comment filed: %s", err)
+				klog.Fatalf("count comment failed: %s", err)
 			}
 		}()
 		defer wg.Done()
 		commentCount, err = rpc.CountComment(s.ctx, &comment.CountRequest{VideoIdList: videoIds})
 		if err != nil {
-			klog.Fatalf("count comment filed: %s", err)
+			klog.Fatalf("count comment failed: %s", err)
 		}
 	}()
 
@@ -81,7 +81,7 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("judge favorite filed: %s", err)
+				klog.Fatalf("judge favorite failed: %s", err)
 			}
 		}()
 		defer wg.Done()
@@ -89,7 +89,7 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 			VideoIdList: videoIds,
 			Token:       req.Token})
 		if err != nil {
-			klog.Fatalf("judge favorite filed: %s", err)
+			klog.Fatalf("judge favorite failed: %s", err)
 		}
 	}()
 
@@ -97,13 +97,13 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) ([]*vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("get userInfo filed: %s", err)
+				klog.Fatalf("get user failed: %s", err)
 			}
 		}()
 		defer wg.Done()
-		author, err = rpc.GetUserInfo(s.ctx, &user.InfoRequest{UserId: userId, Token: req.Token})
+		author, err = rpc.GetUser(s.ctx, &user.GetUserRequest{UserId: userId})
 		if err != nil {
-			klog.Fatalf("get userInfo filed: %s", err)
+			klog.Fatalf("get user failed: %s", err)
 		}
 	}()
 

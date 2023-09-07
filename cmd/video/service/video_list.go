@@ -38,24 +38,30 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 		return nil, unierr.VideoNotFound
 	}
 
+	authorIds := make([]int64, len(videoIds))
+	for i, v := range videos {
+		authorIds[i] = v.AuthorID
+	}
+
 	res := make([]*video.Video, len(videos))
 	var favoriteCount *favorite.CountResponse
 	var commentCount *comment.CountResponse
 	var isFavorite *favorite.JudgeResponse
+	var authors *user.GetUsersResponse
 
 	var wg sync.WaitGroup
-	wg.Add(3)
+	wg.Add(4)
 	//获取视频点赞数
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("count favorite filed: %s", err)
+				klog.Fatalf("count favorite failed: %s", err)
 			}
 		}()
 		defer wg.Done()
 		favoriteCount, err = rpc.CountFavorite(s.ctx, &favorite.CountRequest{VideoIdList: videoIds})
 		if err != nil {
-			klog.Fatalf("count favorite filed: %s", err)
+			klog.Fatalf("count favorite failed: %s", err)
 		}
 	}()
 
@@ -63,13 +69,13 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("count comment filed: %s", err)
+				klog.Fatalf("count comment failed: %s", err)
 			}
 		}()
 		defer wg.Done()
 		commentCount, err = rpc.CountComment(s.ctx, &comment.CountRequest{VideoIdList: videoIds})
 		if err != nil {
-			klog.Fatalf("count comment filed: %s", err)
+			klog.Fatalf("count comment failed: %s", err)
 		}
 	}()
 
@@ -77,7 +83,7 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				klog.Fatalf("judge favorite filed: %s", err)
+				klog.Fatalf("judge favorite failed: %s", err)
 			}
 		}()
 		defer wg.Done()
@@ -85,25 +91,32 @@ func (s *VideoListService) GetVideos(req *video.GetVideosRequest) ([]*video.Vide
 			VideoIdList: videoIds,
 			Token:       req.Token})
 		if err != nil {
-			klog.Fatalf("judge favorite filed: %s", err)
+			klog.Fatalf("judge favorite failed: %s", err)
+		}
+	}()
+
+	//获取视频作者信息
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				klog.Fatalf("get authors failed: %s", err)
+			}
+		}()
+		defer wg.Done()
+		authors, err = rpc.GetUsers(s.ctx, &user.GetUsersRequest{
+			UserIdList: authorIds})
+		if err != nil {
+			klog.Fatalf("get authors failed1: %s", err)
 		}
 	}()
 
 	wg.Wait()
 
 	for i, v := range videos {
-		author, err := rpc.GetUserInfo(s.ctx, &user.InfoRequest{
-			UserId: v.AuthorID,
-			Token:  req.Token})
-		if err != nil {
-			return nil, unierr.NewErrCore(
-				author.StatusCode,
-				author.StatusMsg)
-		}
 
 		res[i] = &video.Video{
 			Id:     int64(v.ID),
-			Author: author.User,
+			Author: authors.User[i],
 			//Author:        &user.User{},
 			PlayUrl:       v.PlayURL,
 			CoverUrl:      v.CoverURL,

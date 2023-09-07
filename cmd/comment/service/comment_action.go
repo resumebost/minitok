@@ -37,10 +37,8 @@ func (s *CommentActionService) PostComment(req *comment.ActionRequest) (*comment
 		return nil, err
 	}
 
-	author, err := rpc.GetUserInfo(s.ctx, &user.InfoRequest{
-		UserId: createComment.UserID,
-		Token:  req.Token,
-	})
+	author, err := rpc.GetUser(s.ctx, &user.GetUserRequest{
+		UserId: createComment.UserID})
 	if err != nil {
 		return nil, err
 	}

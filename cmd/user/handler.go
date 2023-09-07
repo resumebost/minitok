@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"math/rand"
 	"minitok/cmd/user/dal"
 	"minitok/cmd/user/pkg/snowflake"
@@ -151,8 +152,17 @@ func (s *UserServiceImpl) Info(ctx context.Context, req *user.InfoRequest) (resp
 		return res, nil
 	}
 	rUser := user.User{
-		Id:   usr.ID,
-		Name: usr.Username,
+		Id:              usr.ID,
+		Name:            usr.Username,
+		FollowCount:     0,
+		FollowerCount:   0,
+		IsFollow:        false,
+		Avatar:          usr.Avatar,
+		BackgroundImage: usr.BackgroundImage,
+		Signature:       usr.Signature,
+		TotalFavorited:  0,
+		WorkCount:       0,
+		FavoriteCount:   0,
 	}
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -184,7 +194,12 @@ func (s *UserServiceImpl) Info(ctx context.Context, req *user.InfoRequest) (resp
 			}
 			return
 		}
-		rUser.TotalFavorited = int64(len(respFavoriteCount.FavoriteCountList))
+
+		var sum int64 = 0
+		for _, c := range respFavoriteCount.FavoriteCountList {
+			sum += c
+		}
+		rUser.TotalFavorited = sum
 	}()
 
 	//点赞数量
@@ -203,12 +218,206 @@ func (s *UserServiceImpl) Info(ctx context.Context, req *user.InfoRequest) (resp
 		rUser.FavoriteCount = respCountByUser.FavoriteCount
 
 	}()
+	wg.Wait()
 
 	res := &user.InfoResponse{
 		StatusCode: unierr.SuccessCode.ErrCode,
 		StatusMsg:  unierr.SuccessCode.ErrMsg,
 		User:       &rUser,
 	}
+	return res, nil
+}
+
+// GetUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.GetUserRequest) (resp *user.GetUserResponse, err error) {
+	userID := req.UserId
+
+	usr, err := dal.GetUserByID(ctx, userID)
+	if err != nil {
+		res := &user.GetUserResponse{
+			StatusCode: unierr.InternalError.ErrCode,
+			StatusMsg:  unierr.InternalError.ErrMsg,
+		}
+		return res, nil
+	} else if usr.ID == 0 {
+		res := &user.GetUserResponse{
+			StatusCode: unierr.UserNotExist.ErrCode,
+			StatusMsg:  unierr.UserNotExist.ErrMsg,
+			User:       nil,
+		}
+		return res, nil
+	}
+
+	rUser := user.User{
+		Id:              usr.ID,
+		Name:            usr.Username,
+		FollowCount:     0,
+		FollowerCount:   0,
+		IsFollow:        false,
+		Avatar:          usr.Avatar,
+		BackgroundImage: usr.BackgroundImage,
+		Signature:       usr.Signature,
+		TotalFavorited:  0,
+		WorkCount:       0,
+		FavoriteCount:   0,
+	}
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	//视频数量和获赞数量
+	go func() {
+		defer wg.Done()
+		//视频数量
+		respPublishListIds, err := rpc.GetPublishListIds(ctx,
+			&video.PublishListIdsRequest{UserId: req.UserId})
+		if err != nil {
+			resp = &user.GetUserResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+		rUser.WorkCount = int64(len(respPublishListIds.VideoIdList))
+
+		//获赞数量
+		respFavoriteCount, err := rpc.FavoriteCount(ctx,
+			&favorite.CountRequest{VideoIdList: respPublishListIds.VideoIdList})
+		if err != nil {
+			resp = &user.GetUserResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+
+		var sum int64 = 0
+		for _, c := range respFavoriteCount.FavoriteCountList {
+			sum += c
+		}
+		rUser.TotalFavorited = sum
+	}()
+
+	//点赞数量
+	go func() {
+		defer wg.Done()
+		respCountByUser, err := rpc.FavoriteCountByUser(ctx,
+			&favorite.CountByUserRequest{UserId: req.UserId})
+		if err != nil {
+			resp = &user.GetUserResponse{
+				StatusCode: unierr.SuccessCode.ErrCode,
+				StatusMsg:  unierr.SuccessCode.ErrMsg,
+				User:       nil,
+			}
+			return
+		}
+		rUser.FavoriteCount = respCountByUser.FavoriteCount
+
+	}()
 	wg.Wait()
+
+	res := &user.GetUserResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg,
+		User:       &rUser,
+	}
+	return res, nil
+}
+
+// GetUsers implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetUsers(ctx context.Context, req *user.GetUsersRequest) (resp *user.GetUsersResponse, err error) {
+	userIDList := req.UserIdList
+
+	usrList, err := dal.GetUsersByIDList(ctx, userIDList)
+	if err != nil {
+		res := &user.GetUsersResponse{
+			StatusCode: unierr.InternalError.ErrCode,
+			StatusMsg:  unierr.InternalError.ErrMsg,
+		}
+		return res, nil
+	} else if len(usrList) != len(userIDList) {
+		fmt.Println(usrList)
+		fmt.Println(userIDList)
+		res := &user.GetUsersResponse{
+			StatusCode: unierr.UserNotExist.ErrCode,
+			StatusMsg:  unierr.UserNotExist.ErrMsg,
+		}
+		return res, nil
+	}
+
+	var workCountList = make([]int64, len(userIDList))
+	var totalFavoriteList = make([]int64, len(userIDList))
+	var favoriteCountList = make([]int64, len(userIDList))
+	var rUsers = make([]*user.User, len(userIDList))
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	//视频数量和获赞数量
+	go func() {
+		defer wg.Done()
+		//视频数量
+		for i, u := range userIDList {
+			respPublishListIds, err := rpc.GetPublishListIds(ctx,
+				&video.PublishListIdsRequest{UserId: u})
+			if err != nil {
+				klog.Fatalf("get PublishListIds failed: %s", err)
+				return
+			}
+			workCountList[i] = int64(len(respPublishListIds.VideoIdList))
+
+			//获赞数量
+			respFavoriteCount, err := rpc.FavoriteCount(ctx,
+				&favorite.CountRequest{VideoIdList: respPublishListIds.VideoIdList})
+			if err != nil {
+				klog.Fatalf("get FavoriteCount failed: %s", err)
+				return
+			}
+			var sum int64 = 0
+			for _, c := range respFavoriteCount.FavoriteCountList {
+				sum += c
+			}
+			totalFavoriteList[i] = sum
+		}
+
+	}()
+
+	//点赞数量
+	go func() {
+		defer wg.Done()
+		for i, u := range userIDList {
+			respCountByUser, err := rpc.FavoriteCountByUser(ctx,
+				&favorite.CountByUserRequest{UserId: u})
+			if err != nil {
+				klog.Fatal("get CountByUser failed: %s", err)
+				return
+			}
+			favoriteCountList[i] = respCountByUser.FavoriteCount
+		}
+	}()
+	wg.Wait()
+
+	for i, usr := range usrList {
+		rUsers[i] = &user.User{
+			Id:              usr.ID,
+			Name:            usr.Username,
+			FollowCount:     0,
+			FollowerCount:   0,
+			IsFollow:        false,
+			Avatar:          usr.Avatar,
+			BackgroundImage: usr.BackgroundImage,
+			Signature:       usr.Signature,
+			TotalFavorited:  totalFavoriteList[i],
+			WorkCount:       workCountList[i],
+			FavoriteCount:   favoriteCountList[i],
+		}
+	}
+
+	res := &user.GetUsersResponse{
+		StatusCode: unierr.SuccessCode.ErrCode,
+		StatusMsg:  unierr.SuccessCode.ErrMsg,
+		User:       rUsers,
+	}
 	return res, nil
 }
